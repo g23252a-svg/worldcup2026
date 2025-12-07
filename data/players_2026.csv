@@ -1,16 +1,53 @@
 team_code,player_name_en,player_name_ko,position,is_starting,attack,defense,passing,physical,mental,gk
-KOR,Heung-Min Son,손흥민,FW,1,90,50,82,86,88,0
-KOR,Jae-Sung Lee,이재성,MF,1,78,70,80,78,82,0
-KOR,Kang-In Lee,이강인,MF,1,82,55,86,74,84,0
-KOR,Min-Jae Kim,김민재,DF,1,50,90,72,82,85,0
-KOR,Seung-Gyu Kim,김승규,GK,1,20,60,60,70,80,86
-KOR,In-Beom Hwang,황인범,MF,0,76,68,80,74,80,0
-KOR,Ui-Jo Hwang,황의조,FW,0,78,45,72,75,77,0
-
-BRA,Neymar,네이마르,FW,1,92,45,90,82,90,0
-BRA,Alisson,알리송,GK,1,15,65,65,78,82,90
-BRA,Marquinhos,마르키뉴스,DF,1,48,88,78,80,84,0
-BRA,Casemiro,카세미루,MF,1,72,88,78,78,86,0
-BRA,Paqueta,파케타,MF,1,80,75,82,79,82,0
-BRA,Raphinha,라피냐,FW,0,82,55,78,84,80,0
-BRA,Martinelli,마르티넬리,FW,0,84,50,76,86,80,0
+KOR,Seung-Gyu Kim,김승규,GK,1,15,65,68,72,82,86
+KOR,Bum-Keun Song,송범근,GK,0,10,60,60,70,78,82
+KOR,Hyeon-Woo Jo,조현우,GK,0,12,62,62,72,80,84
+KOR,Ki-Je Lee,이기제,DF,1,65,68,72,70,74,0
+KOR,Jin-Su Kim,김진수,DF,0,60,70,70,72,76,0
+KOR,Min-Jae Kim,김민재,DF,1,40,92,76,88,88,0
+KOR,Seung-Hyun Jung,정승현,DF,0,35,80,66,78,76,0
+KOR,Young-Gwon Kim,김영권,DF,1,38,86,72,76,84,0
+KOR,Ju-Sung Kim,김주성,DF,0,35,74,66,74,72,0
+KOR,Ji-Soo Kim,김지수,DF,0,38,76,66,76,72,0
+KOR,Young-Woo Seol,설영우,DF,1,68,78,72,80,80,0
+KOR,Tae-Hwan Kim,김태환,DF,0,64,76,70,78,78,0
+KOR,Yong-Woo Park,박용우,MF,1,60,80,72,78,80,0
+KOR,In-Beom Hwang,황인범,MF,1,75,74,84,76,84,0
+KOR,Soon-Min Lee,이순민,MF,0,68,70,74,74,76,0
+KOR,Jin-Seob Park,박진섭,MF,0,58,78,70,74,78,0
+KOR,Hyun-Seok Hong,홍현석,MF,0,74,70,80,74,80,0
+KOR,Heung-Min Son,손흥민,FW,1,92,50,84,88,90,0
+KOR,Jae-Sung Lee,이재성,MF,1,78,72,82,78,84,0
+KOR,Hee-Chan Hwang,황희찬,FW,0,85,54,78,86,82,0
+KOR,Kang-In Lee,이강인,MF,1,84,52,88,76,86,0
+KOR,Gue-Sung Cho,조규성,FW,1,82,52,72,82,80,0
+KOR,Hyeon-Gyu Oh,오현규,FW,0,80,50,70,80,78,0
+KOR,Woo-Young Jeong,정우영,FW,0,78,50,76,80,78,0
+KOR,Moon-Seon-Min,문선민,FW,0,76,48,72,84,76,0
+KOR,Hyun-Jun Yang,양현준,FW,0,75,46,74,82,76,0
+JPN,Daiya Maekawa,前川黛也,GK,0,10,60,60,72,78,82
+JPN,Zion Suzuki,鈴木彩艶,GK,1,12,64,62,74,80,86
+JPN,Taishi Nozawa,野澤大志ブランドン,GK,0,10,58,60,70,76,80
+JPN,Yukinari Sugawara,菅原由勢,DF,1,70,76,78,80,80,0
+JPN,Shogo Taniguchi,谷口彰悟,DF,0,40,84,72,78,82,0
+JPN,Kou Itakura,板倉滉,DF,0,48,86,74,80,84,0
+JPN,Koki Machida,町田浩樹,DF,1,40,84,70,80,80,0
+JPN,Seiya Maikuma,毎熊晟矢,DF,0,66,76,72,80,78,0
+JPN,Yuta Nakayama,中山雄太,DF,1,48,80,72,78,80,0
+JPN,Hiroki Ito,伊藤洋輝,DF,0,50,82,74,80,80,0
+JPN,Takehiro Tomiyasu,冨安健洋,DF,1,46,88,74,82,86,0
+JPN,Tsuyoshi Watanabe,渡辺剛,DF,0,40,80,68,78,78,0
+JPN,Hidemasa Morita,守田英正,MF,1,70,80,80,78,84,0
+JPN,Wataru Endo,遠藤航,MF,1,64,88,78,80,88,0
+JPN,Reo Hatate,旗手怜央,MF,1,76,76,82,78,82,0
+JPN,Kaishu Sano,佐野海舟,MF,0,64,78,76,76,80,0
+JPN,Kaoru Mitoma,三笘薫,FW,1,90,50,82,88,86,0
+JPN,Takumi Minamino,南野拓実,FW,0,82,56,80,78,82,0
+JPN,Ayase Ueda,上田綺世,FW,1,84,50,72,82,80,0
+JPN,Ritsu Doan,堂安律,FW,0,84,52,80,80,84,0
+JPN,Mao Hosoya,細谷真大,FW,0,80,48,70,80,78,0
+JPN,Keito Nakamura,中村敬斗,FW,0,82,48,78,82,80,0
+JPN,Junya Ito,伊東純也,FW,0,86,50,80,86,80,0
+JPN,Takuma Asano,浅野拓磨,FW,0,80,48,72,84,78,0
+JPN,Takefusa Kubo,久保建英,FW,1,88,50,86,80,86,0
+JPN,Daizen Maeda,前田大然,FW,0,82,50,72,88,80,0
