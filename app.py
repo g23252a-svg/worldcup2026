@@ -603,6 +603,10 @@ def main():
             f"- 그룹 {row['group_letter']} / 슬롯 {row['slot']} / 포트 {row['seeding_pot']}"
         )
 
+    # ✅ 기본값: 아직 시뮬 불가 상태
+    home_row = None
+    away_row = None  
+    
     colA, colB = st.columns(2)
 
     with colA:
@@ -625,86 +629,86 @@ def main():
         st.warning("홈 팀과 원정 팀을 다르게 선택해 주세요.")
     else:
         # ✅ 이 아래부터는 지금 있던 코드들을 그냥 들여쓰기 한 칸 더 해서 넣으면 됨
-    home_row = df_teams[df_teams["team_code"] == home_code].iloc[0]
-    away_row = df_teams[df_teams["team_code"] == away_code].iloc[0]
+        home_row = df_teams[df_teams["team_code"] == home_code].iloc[0]
+        away_row = df_teams[df_teams["team_code"] == away_code].iloc[0]
 
-    st.subheader("선수 데이터 미리 보기")
+        st.subheader("선수 데이터 미리 보기")
 
-    colP1, colP2 = st.columns(2)
+        colP1, colP2 = st.columns(2)
 
-    with colP1:
-        home_players = df_players[df_players["team_code"] == home_code]
-        if home_players.empty:
-            st.caption(f"🔍 {home_row['team_name_ko']} 선수 데이터가 아직 없습니다.")
-        else:
-            st.markdown(f"**{home_row['team_name_ko']} ({home_code}) 선수 목록**")
-            st.dataframe(
-                home_players[
-                    [
-                        "player_name_ko",
-                        "position",
-                        "is_starting",
-                        "attack",
-                        "defense",
-                        "passing",
-                        "physical",
-                        "mental",
-                        "gk",
-                    ]
-                ],
-                use_container_width=True,
-                hide_index=True,
+        with colP1:
+            home_players = df_players[df_players["team_code"] == home_code]
+            if home_players.empty:
+                st.caption(f"🔍 {home_row['team_name_ko']} 선수 데이터가 아직 없습니다.")
+            else:
+                st.markdown(f"**{home_row['team_name_ko']} ({home_code}) 선수 목록**")
+                st.dataframe(
+                    home_players[
+                        [
+                            "player_name_ko",
+                            "position",
+                            "is_starting",
+                            "attack",
+                            "defense",
+                            "passing",
+                            "physical",
+                            "mental",
+                            "gk",
+                        ]
+                    ],
+                    use_container_width=True,
+                    hide_index=True,
+                )
+
+        with colP2:
+            away_players = df_players[df_players["team_code"] == away_code]
+            if away_players.empty:
+                st.caption(f"🔍 {away_row['team_name_ko']} 선수 데이터가 아직 없습니다.")
+            else:
+                st.markdown(f"**{away_row['team_name_ko']} ({away_code}) 선수 목록**")
+                st.dataframe(
+                    away_players[
+                        [
+                            "player_name_ko",
+                            "position",
+                            "is_starting",
+                            "attack",
+                            "defense",
+                            "passing",
+                            "physical",
+                            "mental",
+                            "gk",
+                        ]
+                    ],
+                    use_container_width=True,
+                    hide_index=True,
+                )
+
+        st.markdown("---")
+
+        # 단일 경기 버튼
+        if st.button("🧮 한 경기 시뮬레이션 돌리기"):
+            goals_home, goals_away, meta = simulate_match(home_row, away_row, team_ratings)
+    
+            st.subheader("단일 경기 결과")
+            st.markdown(
+                f"### **{home_row['team_name_ko']} {goals_home} - {goals_away} {away_row['team_name_ko']}**"
+            )
+    
+            src_map = {
+                "players_csv": "선수 능력치 기반",
+                "seeding_pot": "포트 기반 (임시)",
+            }
+    
+            st.caption(
+                f"홈 Elo: {meta['elo_home']:.1f} ({src_map.get(meta['src_home'], meta['src_home'])})  |  "
+                f"원정 Elo: {meta['elo_away']:.1f} ({src_map.get(meta['src_away'], meta['src_away'])})"
+            )
+            st.caption(
+                f"기대 득점 λ  홈: {meta['lam_home']:.2f}  /  원정: {meta['lam_away']:.2f}"
             )
 
-    with colP2:
-        away_players = df_players[df_players["team_code"] == away_code]
-        if away_players.empty:
-            st.caption(f"🔍 {away_row['team_name_ko']} 선수 데이터가 아직 없습니다.")
-        else:
-            st.markdown(f"**{away_row['team_name_ko']} ({away_code}) 선수 목록**")
-            st.dataframe(
-                away_players[
-                    [
-                        "player_name_ko",
-                        "position",
-                        "is_starting",
-                        "attack",
-                        "defense",
-                        "passing",
-                        "physical",
-                        "mental",
-                        "gk",
-                    ]
-                ],
-                use_container_width=True,
-                hide_index=True,
-            )
-
-    st.markdown("---")
-
-    # 단일 경기 버튼
-    if st.button("🧮 한 경기 시뮬레이션 돌리기"):
-        goals_home, goals_away, meta = simulate_match(home_row, away_row, team_ratings)
-
-        st.subheader("단일 경기 결과")
-        st.markdown(
-            f"### **{home_row['team_name_ko']} {goals_home} - {goals_away} {away_row['team_name_ko']}**"
-        )
-
-        src_map = {
-            "players_csv": "선수 능력치 기반",
-            "seeding_pot": "포트 기반 (임시)",
-        }
-
-        st.caption(
-            f"홈 Elo: {meta['elo_home']:.1f} ({src_map.get(meta['src_home'], meta['src_home'])})  |  "
-            f"원정 Elo: {meta['elo_away']:.1f} ({src_map.get(meta['src_away'], meta['src_away'])})"
-        )
-        st.caption(
-            f"기대 득점 λ  홈: {meta['lam_home']:.2f}  /  원정: {meta['lam_away']:.2f}"
-        )
-
-    st.markdown("---")
+        st.markdown("---")
 
     # -------------------------
     # 3) 다중 시뮬레이션 (승/무/패 확률)
