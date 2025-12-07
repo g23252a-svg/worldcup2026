@@ -198,7 +198,7 @@ def simulate_many(
     total_away_goals = 0
     score_counts: dict[tuple[int, int], int] = {}
 
-    # 한 번 메타만 뽑아두고(설명용) 실제 확률 계산엔 안 씀
+    # 예시 meta (설명용)
     _, _, meta_example = simulate_match(home_row, away_row, team_ratings)
 
     for _ in range(n_sim):
@@ -227,6 +227,134 @@ def simulate_many(
         "meta_example": meta_example,
     }
     return summary
+
+
+# =========================
+# 조별리그(그룹) 시뮬레이션
+# =========================
+def build_group_fixtures_from_df(df_group: pd.DataFrame):
+    """
+    그룹 내 4개 팀을 기준 일정으로 변환
+    - seeding_pot, team_code 순으로 정렬한 뒤
+      t1,t2,t3,t4에 대해:
+      MD1: t1-t2, t3-t4
+      MD2: t1-t3, t2-t4
+      MD3: t1-t4, t2-t3
+    """
+    grp_sorted = df_group.sort_values(["seeding_pot", "team_code"])
+    teams = grp_sorted["team_code"].tolist()
+    if len(teams) != 4:
+        return []
+
+    t1, t2, t3, t4 = teams
+    fixtures = [
+        (1, t1, t2),
+        (1, t3, t4),
+        (2, t1, t3),
+        (2, t2, t4),
+        (3, t1, t4),
+        (3, t2, t3),
+    ]
+    return fixtures
+
+
+def simulate_group_once(
+    group_letter: str,
+    df_teams: pd.DataFrame,
+    team_ratings: dict,
+    seed: int | None = None,
+):
+    """
+    특정 그룹(A~L) 한 번 시뮬레이션
+    - 6경기 모두 돌려서 최종 순위표 + 경기 결과 반환
+    """
+    df_group = df_teams[df_teams["group_letter"] == group_letter].copy()
+    if df_group.empty:
+        return pd.DataFrame(), pd.DataFrame()
+
+    fixtures = build_group_fixtures_from_df(df_group)
+    if not fixtures:
+        return pd.DataFrame(), pd.DataFrame()
+
+    # 초기 테이블
+    table = {}
+    for _, row in df_group.iterrows():
+        code = row["team_code"]
+        table[code] = {
+            "team_code": code,
+            "team_name_ko": row["team_name_ko"],
+            "P": 0,
+            "W": 0,
+            "D": 0,
+            "L": 0,
+            "GF": 0,
+            "GA": 0,
+            "GD": 0,
+            "PTS": 0,
+        }
+
+    if seed is not None:
+        np.random.seed(seed)
+
+    match_rows = []
+
+    for md, home_code, away_code in fixtures:
+        home_row = df_group[df_group["team_code"] == home_code].iloc[0]
+        away_row = df_group[df_group["team_code"] == away_code].iloc[0]
+
+        gh, ga, _ = simulate_match(home_row, away_row, team_ratings)
+
+        th = table[home_code]
+        ta = table[away_code]
+
+        th["P"] += 1
+        ta["P"] += 1
+
+        th["GF"] += gh
+        th["GA"] += ga
+        ta["GF"] += ga
+        ta["GA"] += gh
+
+        if gh > ga:
+            th["W"] += 1
+            ta["L"] += 1
+            th["PTS"] += 3
+        elif gh < ga:
+            ta["W"] += 1
+            th["L"] += 1
+            ta["PTS"] += 3
+        else:
+            th["D"] += 1
+            ta["D"] += 1
+            th["PTS"] += 1
+            ta["PTS"] += 1
+
+        match_rows.append(
+            {
+                "matchday": md,
+                "home_team": home_row["team_name_ko"],
+                "home_code": home_code,
+                "away_team": away_row["team_name_ko"],
+                "away_code": away_code,
+                "home_goals": gh,
+                "away_goals": ga,
+                "score": f"{gh}-{ga}",
+            }
+        )
+
+    # GD 계산
+    for rec in table.values():
+        rec["GD"] = rec["GF"] - rec["GA"]
+
+    df_table = pd.DataFrame(table.values())
+    df_table = df_table.sort_values(
+        ["PTS", "GD", "GF"], ascending=[False, False, False]
+    ).reset_index(drop=True)
+    df_table.insert(0, "Rank", df_table.index + 1)
+
+    df_matches = pd.DataFrame(match_rows).sort_values(["matchday", "home_team"])
+
+    return df_table, df_matches
 
 
 # =========================
@@ -444,11 +572,7 @@ def main():
             f"기대 득점 λ(예시)  홈: {meta_example['lam_home']:.2f}  /  원정: {meta_example['lam_away']:.2f}"
         )
 
-        # 스코어 분포 상위 N개
-        st.subheader("자주 나오는 스코어 TOP 5")
-
         score_counts = summary["score_counts"]
-        # (gh, ga, count) 리스트로 변환 후 정렬
         rows = [
             {"home_goals": gh, "away_goals": ga, "count": cnt, "prob_%": cnt / n_sim * 100}
             for (gh, ga), cnt in score_counts.items()
@@ -457,7 +581,6 @@ def main():
 
         if rows_sorted:
             df_scores = pd.DataFrame(rows_sorted)
-            # 보기 좋게 컬럼 이름 변경
             df_scores = df_scores.rename(
                 columns={
                     "home_goals": f"{home_name} 골",
@@ -475,6 +598,67 @@ def main():
             "KOR / JPN은 players_2026.csv의 선수 능력치를 기반으로 팀 레이팅을 계산하고, "
             "다른 팀은 포트(seeding_pot) 기반 레이팅을 사용합니다."
         )
+
+    st.markdown("---")
+
+    # -------------------------
+    # 4) 조별리그 – 그룹 시뮬레이션
+    # -------------------------
+    st.header("🧮 조별리그 단일 시뮬레이션 (그룹별)")
+
+    group_for_sim = st.selectbox(
+        "조별리그에서 시뮬레이션할 그룹을 선택하세요",
+        sorted(df_teams["group_letter"].unique().tolist()),
+        index=0,
+    )
+
+    if st.button("🎯 선택한 그룹 한 번 시뮬레이션"):
+        df_table, df_matches = simulate_group_once(
+            group_for_sim, df_teams, team_ratings
+        )
+
+        if df_table.empty:
+            st.warning("해당 그룹에 팀 데이터가 없습니다.")
+        else:
+            st.subheader(f"그룹 {group_for_sim} 최종 순위표")
+            st.dataframe(
+                df_table[
+                    [
+                        "Rank",
+                        "team_name_ko",
+                        "team_code",
+                        "P",
+                        "W",
+                        "D",
+                        "L",
+                        "GF",
+                        "GA",
+                        "GD",
+                        "PTS",
+                    ]
+                ],
+                use_container_width=True,
+                hide_index=True,
+            )
+
+            st.subheader(f"그룹 {group_for_sim} 경기 결과")
+            st.table(
+                df_matches[
+                    [
+                        "matchday",
+                        "home_team",
+                        "away_team",
+                        "score",
+                        "home_goals",
+                        "away_goals",
+                    ]
+                ]
+            )
+
+            st.caption(
+                "일정은 그룹 내 팀을 시드 순서로 정렬하여 "
+                "총 3라운드(각 팀 3경기) 라운드 로빈 형태로 자동 생성됩니다."
+            )
 
 
 if __name__ == "__main__":
