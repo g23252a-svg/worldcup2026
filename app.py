@@ -325,6 +325,20 @@ def build_group_fixtures_from_df(df_group: pd.DataFrame):
     # ✅ NEW: group_pos를 이용한 편성
     mapping = {int(row["group_pos"]): row["team_code"] for _, row in grp.iterrows()}
     if set(mapping.keys()) != {1, 2, 3, 4}:
+        # 혹시 누락/중복 등 있으면 그냥 일정 안 만든다
+        return []
+
+    fixtures = []
+    for md, hp, ap in GROUP_FIXTURE_TEMPLATE:
+        home_code = mapping[hp]
+        away_code = mapping[ap]
+        fixtures.append((md, home_code, away_code))
+
+    return fixtures
+
+    # ✅ NEW: group_pos를 이용한 편성
+    mapping = {int(row["group_pos"]): row["team_code"] for _, row in grp.iterrows()}
+    if set(mapping.keys()) != {1, 2, 3, 4}:
         return []
 
     fixtures = []
@@ -491,9 +505,9 @@ def main():
         "notes",
     ]
     cols_existing = [c for c in cols if c in df_view.columns]
-    
+
     st.dataframe(
-        df_view,
+        df_view[cols_existing],
         use_container_width=True,
         hide_index=True,
     )
