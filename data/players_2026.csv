@@ -1,0 +1,16 @@
+team_code,player_name_en,player_name_ko,position,is_starting,attack,defense,passing,physical,mental,gk
+KOR,Heung-Min Son,손흥민,FW,1,90,50,82,86,88,0
+KOR,Jae-Sung Lee,이재성,MF,1,78,70,80,78,82,0
+KOR,Kang-In Lee,이강인,MF,1,82,55,86,74,84,0
+KOR,Min-Jae Kim,김민재,DF,1,50,90,72,82,85,0
+KOR,Seung-Gyu Kim,김승규,GK,1,20,60,60,70,80,86
+KOR,In-Beom Hwang,황인범,MF,0,76,68,80,74,80,0
+KOR,Ui-Jo Hwang,황의조,FW,0,78,45,72,75,77,0
+
+BRA,Neymar,네이마르,FW,1,92,45,90,82,90,0
+BRA,Alisson,알리송,GK,1,15,65,65,78,82,90
+BRA,Marquinhos,마르키뉴스,DF,1,48,88,78,80,84,0
+BRA,Casemiro,카세미루,MF,1,72,88,78,78,86,0
+BRA,Paqueta,파케타,MF,1,80,75,82,79,82,0
+BRA,Raphinha,라피냐,FW,0,82,55,78,84,80,0
+BRA,Martinelli,마르티넬리,FW,0,84,50,76,86,80,0
