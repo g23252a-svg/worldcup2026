@@ -56,16 +56,16 @@ def assign_group_pos(group_letter: str, seeding_pot: int) -> int:
 def load_teams():
     df = pd.read_csv("data/teams_2026.csv")
 
-    # ✅ NEW: 조 내 포지션(1~4번) 계산
+    # 조 내 포지션(1~4번) 계산
     df["group_pos"] = df.apply(
         lambda r: assign_group_pos(r["group_letter"], r["seeding_pot"]),
         axis=1,
     )
 
-    # ✅ NEW: 보기 편하게 "A1, B3" 같은 슬롯 문자열도 추가
+    # 보기 편하게 "A1, B3" 같은 슬롯 문자열도 추가
     df["slot"] = df["group_letter"] + df["group_pos"].astype(str)
 
-    # 정렬 기준도 seeding이 아니라 실제 슬롯 기준으로 정렬
+    # 실제 슬롯 기준으로 정렬
     df = df.sort_values(["group_letter", "group_pos", "team_code"])
     return df
 
@@ -285,7 +285,7 @@ def simulate_many(
     return summary
 
 
-# 파일 상단 전역
+# 조별리그 일정 템플릿
 GROUP_FIXTURE_TEMPLATE = [
     # (matchday, home_pos, away_pos)
     (1, 1, 2),  # MD1: 1 vs 2
@@ -322,10 +322,9 @@ def build_group_fixtures_from_df(df_group: pd.DataFrame):
         ]
         return fixtures
 
-    # ✅ NEW: group_pos를 이용한 편성
+    # group_pos를 이용한 편성
     mapping = {int(row["group_pos"]): row["team_code"] for _, row in grp.iterrows()}
     if set(mapping.keys()) != {1, 2, 3, 4}:
-        # 혹시 누락/중복 등 있으면 그냥 일정 안 만든다
         return []
 
     fixtures = []
@@ -435,6 +434,7 @@ def simulate_group_once(
 
     return df_table, df_matches
 
+
 def simulate_group_many(
     group_letter: str,
     df_teams: pd.DataFrame,
@@ -474,10 +474,9 @@ def simulate_group_many(
         np.random.seed(seed)
 
     for _ in range(n_sim):
-        # 여기서는 seed=None으로 넘겨서 내부에서 매번 같은 시드를 사용하지 않도록 함
+        # seed=None으로 넘겨서 매번 다른 난수 사용
         df_table, _ = simulate_group_once(group_letter, df_teams, team_ratings, seed=None)
         if df_table.empty:
-            # 뭔가 문제가 있으면 스킵
             continue
 
         for _, row in df_table.iterrows():
@@ -526,6 +525,51 @@ def simulate_group_many(
     return df_stats
 
 
+def simulate_all_groups_many(
+    df_teams: pd.DataFrame,
+    team_ratings: dict,
+    n_sim: int = 1000,
+    seed: int | None = None,
+):
+    """
+    전체 조별리그(A~L)를 동시에 여러 번 시뮬레이션하여
+    - 각 팀의 1위/2위/3위/4위 확률
+    - 평균 승점, 평균 득실차, 평균 득점
+    - 1~2위 진출 확률(P_qual)
+    을 한 번에 모아서 반환한다.
+    """
+    group_letters = sorted(df_teams["group_letter"].unique().tolist())
+    all_stats = []
+
+    if seed is not None:
+        np.random.seed(seed)
+
+    for gl in group_letters:
+        df_stats = simulate_group_many(
+            gl,
+            df_teams,
+            team_ratings,
+            n_sim=n_sim,
+            seed=None,  # 각 그룹은 독립적으로 랜덤
+        )
+        if df_stats.empty:
+            continue
+
+        # 어느 그룹인지 표시용
+        df_stats.insert(0, "group_letter", gl)
+        all_stats.append(df_stats)
+
+    if not all_stats:
+        return pd.DataFrame()
+
+    df_all = pd.concat(all_stats, ignore_index=True)
+
+    # 1~2위 합산 진출 확률 컬럼
+    df_all["P_qual(1~2위%)"] = df_all["P1(1위%)"] + df_all["P2(2위%)"]
+
+    return df_all
+
+
 # =========================
 # Streamlit UI
 # =========================
@@ -559,7 +603,7 @@ def main():
     st.subheader("팀 리스트")
     cols = [
         "group_letter",
-        "slot",          # A1, B3 이런 거
+        "slot",          # A1, B3 ...
         "team_code",
         "team_name_ko",
         "confed",
@@ -603,10 +647,10 @@ def main():
             f"- 그룹 {row['group_letter']} / 슬롯 {row['slot']} / 포트 {row['seeding_pot']}"
         )
 
-    # ✅ 기본값: 아직 시뮬 불가 상태
+    # 기본값: 아직 시뮬 불가 상태
     home_row = None
-    away_row = None  
-    
+    away_row = None
+
     colA, colB = st.columns(2)
 
     with colA:
@@ -628,7 +672,6 @@ def main():
     if home_code == away_code:
         st.warning("홈 팀과 원정 팀을 다르게 선택해 주세요.")
     else:
-        # ✅ 이 아래부터는 지금 있던 코드들을 그냥 들여쓰기 한 칸 더 해서 넣으면 됨
         home_row = df_teams[df_teams["team_code"] == home_code].iloc[0]
         away_row = df_teams[df_teams["team_code"] == away_code].iloc[0]
 
@@ -689,20 +732,22 @@ def main():
         # 단일 경기 버튼
         if st.button("🧮 한 경기 시뮬레이션 돌리기"):
             goals_home, goals_away, meta = simulate_match(home_row, away_row, team_ratings)
-    
+
             st.subheader("단일 경기 결과")
             st.markdown(
                 f"### **{home_row['team_name_ko']} {goals_home} - {goals_away} {away_row['team_name_ko']}**"
             )
-    
+
             src_map = {
                 "players_csv": "선수 능력치 기반",
                 "seeding_pot": "포트 기반 (임시)",
             }
-    
+
             st.caption(
-                f"홈 Elo: {meta['elo_home']:.1f} ({src_map.get(meta['src_home'], meta['src_home'])})  |  "
-                f"원정 Elo: {meta['elo_away']:.1f} ({src_map.get(meta['src_away'], meta['src_away'])})"
+                f"홈 Elo: {meta['elo_home']:.1f} "
+                f"({src_map.get(meta['src_home'], meta['src_home'])})  |  "
+                f"원정 Elo: {meta['elo_away']:.1f} "
+                f"({src_map.get(meta['src_away'], meta['src_away'])})"
             )
             st.caption(
                 f"기대 득점 λ  홈: {meta['lam_home']:.2f}  /  원정: {meta['lam_away']:.2f}"
@@ -714,51 +759,53 @@ def main():
     # 3) 다중 시뮬레이션 (승/무/패 확률)
     # -------------------------
     st.header("📊 다중 시뮬레이션 – 승/무/패 확률")
-    
+
     n_sim = st.slider(
-        "시뮬레이션 횟수", 
-        min_value=100, max_value=5000, step=100, value=1000
+        "시뮬레이션 횟수",
+        min_value=100,
+        max_value=5000,
+        step=100,
+        value=1000,
     )
-    
+
     if st.button("🔁 다중 시뮬레이션 돌리기"):
-        # ✅ 안전장치 추가
         if home_row is None or away_row is None:
             st.warning("홈/원정 팀을 서로 다르게 선택한 뒤에만 다중 시뮬레이션을 실행할 수 있습니다.")
         else:
             summary = simulate_many(home_row, away_row, team_ratings, n_sim=n_sim)
-    
+
             home_name = home_row["team_name_ko"]
             away_name = away_row["team_name_ko"]
-    
+
             home_wins = summary["home_wins"]
             draws = summary["draws"]
             away_wins = summary["away_wins"]
-    
+
             p_home = home_wins / n_sim * 100
             p_draw = draws / n_sim * 100
             p_away = away_wins / n_sim * 100
-    
+
             avg_home_goals = summary["avg_home_goals"]
             avg_away_goals = summary["avg_away_goals"]
-    
+
             meta_example = summary["meta_example"]
-    
+
             st.subheader("요약")
-    
+
             c1, c2, c3 = st.columns(3)
             c1.metric(f"{home_name} 승", f"{p_home:.1f}%", f"{home_wins} / {n_sim}")
             c2.metric("무승부", f"{p_draw:.1f}%", f"{draws} / {n_sim}")
             c3.metric(f"{away_name} 승", f"{p_away:.1f}%", f"{away_wins} / {n_sim}")
-    
+
             st.caption(
                 f"평균 스코어: {home_name} {avg_home_goals:.2f} - {avg_away_goals:.2f} {away_name}"
             )
-    
+
             src_map = {
                 "players_csv": "선수 능력치 기반",
                 "seeding_pot": "포트 기반 (임시)",
             }
-    
+
             st.caption(
                 f"Elo(예시)  홈: {meta_example['elo_home']:.1f} "
                 f"({src_map.get(meta_example['src_home'], meta_example['src_home'])})  |  "
@@ -769,7 +816,7 @@ def main():
                 f"기대 득점 λ(예시)  홈: {meta_example['lam_home']:.2f}  /  "
                 f"원정: {meta_example['lam_away']:.2f}"
             )
-    
+
             score_counts = summary["score_counts"]
             rows = [
                 {
@@ -781,7 +828,7 @@ def main():
                 for (gh, ga), cnt in score_counts.items()
             ]
             rows_sorted = sorted(rows, key=lambda x: x["count"], reverse=True)[:5]
-    
+
             if rows_sorted:
                 df_scores = pd.DataFrame(rows_sorted)
                 df_scores = df_scores.rename(
@@ -795,7 +842,7 @@ def main():
                 st.table(df_scores)
             else:
                 st.caption("스코어 데이터가 없습니다.")
-    
+
             st.info(
                 f"{n_sim}번의 시뮬레이션 결과입니다. "
                 "KOR / JPN은 players_2026.csv의 선수 능력치를 기반으로 팀 레이팅을 계산하고, "
@@ -805,7 +852,7 @@ def main():
     st.markdown("---")
 
     # -------------------------
-    # 4) 조별리그 – 그룹 시뮬레이션
+    # 4) 조별리그 – 그룹 단일 시뮬레이션
     # -------------------------
     st.header("🧮 조별리그 단일 시뮬레이션 (그룹별)")
 
@@ -866,7 +913,7 @@ def main():
     st.markdown("---")
 
     # -------------------------
-    # 5) 조별리그 – 다중 시뮬레이션 (순위 확률)
+    # 5) 조별리그 – 다중 시뮬레이션 (그룹별 순위 확률)
     # -------------------------
     st.header("📈 조별리그 다중 시뮬레이션 (순위 확률)")
 
@@ -874,7 +921,7 @@ def main():
         "다중 시뮬레이션할 그룹을 선택하세요",
         sorted(df_teams["group_letter"].unique().tolist()),
         index=0,
-        key="group_for_mc",   # 위 selectbox와 key 다르게
+        key="group_for_mc",
     )
 
     n_group_sim = st.slider(
@@ -883,7 +930,7 @@ def main():
         max_value=5000,
         step=100,
         value=1000,
-        key="n_group_sim",    # 위 slider와 key 다르게
+        key="n_group_sim",
     )
 
     if st.button("📈 선택한 그룹 다중 시뮬레이션 돌리기"):
@@ -907,6 +954,72 @@ def main():
             st.caption(
                 f"{n_group_sim}번 조별리그를 돌린 결과입니다. "
                 "각 팀의 1위·2위·3위·4위 확률과 평균 승점/득실차/득점을 보여줍니다."
+            )
+
+    st.markdown("---")
+
+    # -------------------------
+    # 6) 전체 조별리그 – 다중 시뮬레이션 (전 팀 요약)
+    # -------------------------
+    st.header("🌍 전체 조별리그 다중 시뮬레이션 (전 팀 요약)")
+
+    n_all_sim = st.slider(
+        "전체 조별리그 시뮬레이션 횟수",
+        min_value=100,
+        max_value=5000,
+        step=100,
+        value=1000,
+        key="n_all_sim",
+    )
+
+    if st.button("🌍 전체 그룹 한 번에 시뮬레이션"):
+        df_all_stats = simulate_all_groups_many(
+            df_teams,
+            team_ratings,
+            n_sim=n_all_sim,
+        )
+
+        if df_all_stats.empty:
+            st.warning("조별리그 통계를 계산할 수 있는 팀 데이터가 없습니다.")
+        else:
+            show_cols = [
+                "group_letter",
+                "team_name_ko",
+                "team_code",
+                "P1(1위%)",
+                "P2(2위%)",
+                "P3(3위%)",
+                "P4(4위%)",
+                "P_qual(1~2위%)",
+                "avg_PTS",
+                "avg_GD",
+                "avg_GF",
+            ]
+            show_cols = [c for c in show_cols if c in df_all_stats.columns]
+
+            st.subheader("전체 팀 순위 확률 및 진출 확률 요약")
+            st.dataframe(
+                df_all_stats[show_cols],
+                use_container_width=True,
+                hide_index=True,
+            )
+
+            # KOR / JPN만 별도 표시
+            mask_kor_jpn = df_all_stats["team_code"].isin(["KOR", "JPN"])
+            df_kor_jpn = df_all_stats[mask_kor_jpn]
+
+            if not df_kor_jpn.empty:
+                st.subheader("🇰🇷 KOR / 🇯🇵 JPN 요약")
+                st.dataframe(
+                    df_kor_jpn[show_cols],
+                    use_container_width=True,
+                    hide_index=True,
+                )
+
+            st.caption(
+                f"{n_all_sim}번 전체 조별리그를 돌린 결과입니다. "
+                "각 팀의 1~4위 확률과 평균 승점/득실차/득점을 한 번에 볼 수 있으며, "
+                "P_qual(1~2위%)는 해당 팀이 조 1~2위로 올라갈 확률을 의미합니다."
             )
 
 
