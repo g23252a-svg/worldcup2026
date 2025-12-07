@@ -20,7 +20,7 @@ def load_players():
         df = pd.read_csv("data/players_2026.csv")
     except FileNotFoundError:
         return pd.DataFrame()
-    # 기본 정렬: 팀 → 포지션 → 선발 여부
+
     if not df.empty:
         df = df.sort_values(
             ["team_code", "position", "is_starting", "player_name_en"],
@@ -35,9 +35,6 @@ def load_players():
 def compute_player_overall(row: pd.Series) -> float:
     """
     선수 개별 종합 능력치(0~100)를 하나로 압축
-    - 공격 비중 조금 높게
-    - 수비/패스는 중간
-    - 피지컬/멘탈은 보조
     """
     return (
         row["attack"] * 0.35
@@ -50,26 +47,15 @@ def compute_player_overall(row: pd.Series) -> float:
 
 def build_team_ratings(df_players: pd.DataFrame, use_starting_only: bool = True):
     """
-    players_2026.csv를 기반으로 팀별 레이팅 계산
-    - 우선 선발 11명 평균으로 팀 능력치 산출
-    - 해당 팀에 선수 데이터가 없으면 이 dict에 안 들어감
-    반환 형식:
-    {
-      "KOR": {
-          "overall": 83.2,
-          "attack": 82.1,
-          "defense": 78.3,
-          ...
-      },
-      ...
-    }
+    players_2026.csv 기반 팀별 레이팅 계산
+    - 기본: 선발 11명 평균으로 팀 능력치 산출
+    - 선수 데이터 없는 팀은 결과 dict에 없음
     """
     ratings: dict[str, dict[str, float]] = {}
 
     if df_players.empty:
         return ratings
 
-    # player_overall 컬럼 추가
     df = df_players.copy()
     df["player_overall"] = df.apply(compute_player_overall, axis=1)
 
@@ -77,7 +63,7 @@ def build_team_ratings(df_players: pd.DataFrame, use_starting_only: bool = True)
         g = grp
         if use_starting_only:
             starters = g[g["is_starting"] == 1]
-            if len(starters) >= 8:  # 선발이 어느 정도 있으면 선발 기준
+            if len(starters) >= 8:
                 g = starters
 
         team_attack = g["attack"].mean()
@@ -101,7 +87,7 @@ def build_team_ratings(df_players: pd.DataFrame, use_starting_only: bool = True)
 
 def pot_to_rating(pot: int) -> float:
     """
-    포트 번호(1~4)를 간단 Elo-비슷한 레이팅으로 변환
+    포트 번호(1~4)를 Elo 비슷한 레이팅으로 변환
     - 선수 데이터 없는 팀용 fallback
     """
     pot = int(pot)
@@ -117,16 +103,16 @@ def pot_to_rating(pot: int) -> float:
 def overall_to_elo(overall: float) -> float:
     """
     선수 평균 overall(0~100)을 Elo 비슷한 스케일로 변환
-    - 75를 1800 정도, 90을 1950 근처로 맞추는 느낌
+    - 75 → 1800 근처, 90 → 1950 근처
     """
     return 1800.0 + (overall - 75.0) * 10.0
 
 
 def get_team_elo(row_team: pd.Series, team_ratings: dict) -> tuple[float, str]:
     """
-    해당 팀의 최종 Elo 레이팅과, 어떤 소스를 썼는지 설명 문자열 반환
-    - players_2026에 데이터 있으면: 선수 기반
-    - 없으면: seeding_pot 기반
+    팀 최종 Elo 레이팅 + 소스
+    - players_2026에 있으면 선수 기반
+    - 없으면 포트 기반
     """
     code = row_team["team_code"]
     pot = row_team["seeding_pot"]
@@ -147,8 +133,7 @@ def get_team_elo(row_team: pd.Series, team_ratings: dict) -> tuple[float, str]:
 # =========================
 def expected_goals_from_elo(eA: float, eB: float, base_goals: float = 2.6):
     """
-    두 팀 Elo 레이팅으로부터 각 팀 기대 득점 λA, λB 계산
-    - Elo 차이 → 승률 → 기대 득점 분배
+    Elo 레이팅으로 기대 득점 λA, λB 계산
     """
     diff = eA - eB
     pA = 1.0 / (1.0 + 10.0 ** (-diff / 400.0))
@@ -166,7 +151,6 @@ def simulate_match(
 ):
     """
     한 경기 시뮬레이션
-    - 팀 Elo(선수 기반 or 포트 기반) → 기대 득점 → 포아송 랜덤 골수
     """
     if seed is not None:
         np.random.seed(seed)
@@ -191,6 +175,60 @@ def simulate_match(
     return int(goals_home), int(goals_away), meta
 
 
+def simulate_many(
+    home_row: pd.Series,
+    away_row: pd.Series,
+    team_ratings: dict,
+    n_sim: int = 1000,
+    seed: int | None = None,
+):
+    """
+    같은 매치를 여러 번 시뮬레이션
+    - 승/무/패 횟수
+    - 평균 득점/실점
+    - 스코어라인 분포
+    """
+    if seed is not None:
+        np.random.seed(seed)
+
+    home_wins = 0
+    draws = 0
+    away_wins = 0
+    total_home_goals = 0
+    total_away_goals = 0
+    score_counts: dict[tuple[int, int], int] = {}
+
+    # 한 번 메타만 뽑아두고(설명용) 실제 확률 계산엔 안 씀
+    _, _, meta_example = simulate_match(home_row, away_row, team_ratings)
+
+    for _ in range(n_sim):
+        gh, ga, _ = simulate_match(home_row, away_row, team_ratings)
+        total_home_goals += gh
+        total_away_goals += ga
+
+        if gh > ga:
+            home_wins += 1
+        elif gh == ga:
+            draws += 1
+        else:
+            away_wins += 1
+
+        key = (gh, ga)
+        score_counts[key] = score_counts.get(key, 0) + 1
+
+    summary = {
+        "n_sim": n_sim,
+        "home_wins": home_wins,
+        "draws": draws,
+        "away_wins": away_wins,
+        "avg_home_goals": total_home_goals / n_sim,
+        "avg_away_goals": total_away_goals / n_sim,
+        "score_counts": score_counts,
+        "meta_example": meta_example,
+    }
+    return summary
+
+
 # =========================
 # Streamlit UI
 # =========================
@@ -207,11 +245,9 @@ def main():
     # -------------------------
     st.sidebar.header("필터")
 
-    # 그룹 필터
     group_options = ["ALL"] + sorted(df_teams["group_letter"].unique().tolist())
     selected_group = st.sidebar.selectbox("그룹 선택", group_options)
 
-    # 컨페더레이션 필터
     confed_all = sorted(df_teams["confed"].unique().tolist())
     selected_confed = st.sidebar.multiselect(
         "컨페더레이션 선택",
@@ -245,7 +281,7 @@ def main():
     st.markdown("---")
 
     # -------------------------
-    # 2) 단일 경기 시뮬레이션
+    # 2) 단일 경기 + 선수 미리보기
     # -------------------------
     st.header("⚽ 단일 경기 시뮬레이션")
 
@@ -280,7 +316,6 @@ def main():
     home_row = df_teams[df_teams["team_code"] == home_code].iloc[0]
     away_row = df_teams[df_teams["team_code"] == away_code].iloc[0]
 
-    # 선수 테이블 미리 보기 (KOR/JPN만 데이터 존재)
     st.subheader("선수 데이터 미리 보기")
 
     colP1, colP2 = st.columns(2)
@@ -335,15 +370,15 @@ def main():
 
     st.markdown("---")
 
+    # 단일 경기 버튼
     if st.button("🧮 한 경기 시뮬레이션 돌리기"):
         goals_home, goals_away, meta = simulate_match(home_row, away_row, team_ratings)
 
-        st.subheader("결과")
+        st.subheader("단일 경기 결과")
         st.markdown(
             f"### **{home_row['team_name_ko']} {goals_home} - {goals_away} {away_row['team_name_ko']}**"
         )
 
-        # 레이팅/λ 설명
         src_map = {
             "players_csv": "선수 능력치 기반",
             "seeding_pot": "포트 기반 (임시)",
@@ -357,9 +392,88 @@ def main():
             f"기대 득점 λ  홈: {meta['lam_home']:.2f}  /  원정: {meta['lam_away']:.2f}"
         )
 
+    st.markdown("---")
+
+    # -------------------------
+    # 3) 다중 시뮬레이션 (승/무/패 확률)
+    # -------------------------
+    st.header("📊 다중 시뮬레이션 – 승/무/패 확률")
+
+    n_sim = st.slider("시뮬레이션 횟수", min_value=100, max_value=5000, step=100, value=1000)
+
+    if st.button("🔁 다중 시뮬레이션 돌리기"):
+        summary = simulate_many(home_row, away_row, team_ratings, n_sim=n_sim)
+
+        home_name = home_row["team_name_ko"]
+        away_name = away_row["team_name_ko"]
+
+        home_wins = summary["home_wins"]
+        draws = summary["draws"]
+        away_wins = summary["away_wins"]
+
+        p_home = home_wins / n_sim * 100
+        p_draw = draws / n_sim * 100
+        p_away = away_wins / n_sim * 100
+
+        avg_home_goals = summary["avg_home_goals"]
+        avg_away_goals = summary["avg_away_goals"]
+
+        meta_example = summary["meta_example"]
+
+        st.subheader("요약")
+
+        c1, c2, c3 = st.columns(3)
+        c1.metric(f"{home_name} 승", f"{p_home:.1f}%", f"{home_wins} / {n_sim}")
+        c2.metric("무승부", f"{p_draw:.1f}%", f"{draws} / {n_sim}")
+        c3.metric(f"{away_name} 승", f"{p_away:.1f}%", f"{away_wins} / {n_sim}")
+
+        st.caption(
+            f"평균 스코어: {home_name} {avg_home_goals:.2f} - {avg_away_goals:.2f} {away_name}"
+        )
+
+        src_map = {
+            "players_csv": "선수 능력치 기반",
+            "seeding_pot": "포트 기반 (임시)",
+        }
+
+        st.caption(
+            f"Elo(예시)  홈: {meta_example['elo_home']:.1f} ({src_map.get(meta_example['src_home'], meta_example['src_home'])})  |  "
+            f"원정: {meta_example['elo_away']:.1f} ({src_map.get(meta_example['src_away'], meta_example['src_away'])})"
+        )
+        st.caption(
+            f"기대 득점 λ(예시)  홈: {meta_example['lam_home']:.2f}  /  원정: {meta_example['lam_away']:.2f}"
+        )
+
+        # 스코어 분포 상위 N개
+        st.subheader("자주 나오는 스코어 TOP 5")
+
+        score_counts = summary["score_counts"]
+        # (gh, ga, count) 리스트로 변환 후 정렬
+        rows = [
+            {"home_goals": gh, "away_goals": ga, "count": cnt, "prob_%": cnt / n_sim * 100}
+            for (gh, ga), cnt in score_counts.items()
+        ]
+        rows_sorted = sorted(rows, key=lambda x: x["count"], reverse=True)[:5]
+
+        if rows_sorted:
+            df_scores = pd.DataFrame(rows_sorted)
+            # 보기 좋게 컬럼 이름 변경
+            df_scores = df_scores.rename(
+                columns={
+                    "home_goals": f"{home_name} 골",
+                    "away_goals": f"{away_name} 골",
+                    "count": "횟수",
+                    "prob_%": "확률(%)",
+                }
+            )
+            st.table(df_scores)
+        else:
+            st.caption("스코어 데이터가 없습니다.")
+
         st.info(
-            "KOR / JPN은 players_2026.csv에 있는 선수 능력치 평균으로 팀 레이팅을 계산합니다. "
-            "다른 팀은 아직 선수 데이터가 없어서 포트(seeding_pot) 기반 레이팅을 사용 중입니다."
+            f"{n_sim}번의 시뮬레이션 결과입니다. "
+            "KOR / JPN은 players_2026.csv의 선수 능력치를 기반으로 팀 레이팅을 계산하고, "
+            "다른 팀은 포트(seeding_pot) 기반 레이팅을 사용합니다."
         )
 
 
