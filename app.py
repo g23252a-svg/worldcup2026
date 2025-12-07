@@ -435,6 +435,96 @@ def simulate_group_once(
 
     return df_table, df_matches
 
+def simulate_group_many(
+    group_letter: str,
+    df_teams: pd.DataFrame,
+    team_ratings: dict,
+    n_sim: int = 1000,
+    seed: int | None = None,
+):
+    """
+    특정 그룹(A~L)을 여러 번 시뮬레이션하여
+    - 각 팀의 1위/2위/3위/4위 확률
+    - 평균 승점, 평균 득실차, 평균 득점
+    을 계산한다.
+    """
+    df_group = df_teams[df_teams["group_letter"] == group_letter].copy()
+    if df_group.empty:
+        return pd.DataFrame()
+
+    team_codes = df_group["team_code"].tolist()
+
+    # 통계 초기화
+    stats = {
+        code: {
+            "team_code": code,
+            "team_name_ko": df_group[df_group["team_code"] == code]["team_name_ko"].iloc[0],
+            "cnt_rank1": 0,
+            "cnt_rank2": 0,
+            "cnt_rank3": 0,
+            "cnt_rank4": 0,
+            "sum_pts": 0.0,
+            "sum_gd": 0.0,
+            "sum_gf": 0.0,
+        }
+        for code in team_codes
+    }
+
+    if seed is not None:
+        np.random.seed(seed)
+
+    for _ in range(n_sim):
+        # 여기서는 seed=None으로 넘겨서 내부에서 매번 같은 시드를 사용하지 않도록 함
+        df_table, _ = simulate_group_once(group_letter, df_teams, team_ratings, seed=None)
+        if df_table.empty:
+            # 뭔가 문제가 있으면 스킵
+            continue
+
+        for _, row in df_table.iterrows():
+            code = row["team_code"]
+            rec = stats[code]
+
+            rank = int(row["Rank"])
+            if rank == 1:
+                rec["cnt_rank1"] += 1
+            elif rank == 2:
+                rec["cnt_rank2"] += 1
+            elif rank == 3:
+                rec["cnt_rank3"] += 1
+            elif rank == 4:
+                rec["cnt_rank4"] += 1
+
+            rec["sum_pts"] += float(row["PTS"])
+            rec["sum_gd"] += float(row["GD"])
+            rec["sum_gf"] += float(row["GF"])
+
+    # 결과 DataFrame으로 변환
+    rows = []
+    for code, rec in stats.items():
+        rows.append(
+            {
+                "team_code": code,
+                "team_name_ko": rec["team_name_ko"],
+                "P1(1위%)": rec["cnt_rank1"] / n_sim * 100,
+                "P2(2위%)": rec["cnt_rank2"] / n_sim * 100,
+                "P3(3위%)": rec["cnt_rank3"] / n_sim * 100,
+                "P4(4위%)": rec["cnt_rank4"] / n_sim * 100,
+                "avg_PTS": rec["sum_pts"] / n_sim,
+                "avg_GD": rec["sum_gd"] / n_sim,
+                "avg_GF": rec["sum_gf"] / n_sim,
+            }
+        )
+
+    df_stats = pd.DataFrame(rows)
+
+    # 1위 확률 → 2위 확률 → 평균 승점 순으로 정렬
+    df_stats = df_stats.sort_values(
+        ["P1(1위%)", "P2(2위%)", "avg_PTS"],
+        ascending=[False, False, False],
+    ).reset_index(drop=True)
+
+    return df_stats
+
 
 # =========================
 # Streamlit UI
@@ -533,8 +623,8 @@ def main():
 
     if home_code == away_code:
         st.warning("홈 팀과 원정 팀을 다르게 선택해 주세요.")
-        return
-
+    else:
+        # ✅ 이 아래부터는 지금 있던 코드들을 그냥 들여쓰기 한 칸 더 해서 넣으면 됨
     home_row = df_teams[df_teams["team_code"] == home_code].iloc[0]
     away_row = df_teams[df_teams["team_code"] == away_code].iloc[0]
 
@@ -752,6 +842,52 @@ def main():
             st.caption(
                 "일정은 그룹 내 팀의 슬롯(A1~L4, group_pos)을 기준으로 "
                 "총 3라운드(각 팀 3경기) 라운드 로빈 형태로 자동 생성됩니다."
+            )
+
+    st.markdown("---")
+
+    # -------------------------
+    # 5) 조별리그 – 다중 시뮬레이션 (순위 확률)
+    # -------------------------
+    st.header("📈 조별리그 다중 시뮬레이션 (순위 확률)")
+
+    group_for_mc = st.selectbox(
+        "다중 시뮬레이션할 그룹을 선택하세요",
+        sorted(df_teams["group_letter"].unique().tolist()),
+        index=0,
+        key="group_for_mc",   # 위 selectbox와 key 다르게
+    )
+
+    n_group_sim = st.slider(
+        "그룹 시뮬레이션 횟수",
+        min_value=100,
+        max_value=5000,
+        step=100,
+        value=1000,
+        key="n_group_sim",    # 위 slider와 key 다르게
+    )
+
+    if st.button("📈 선택한 그룹 다중 시뮬레이션 돌리기"):
+        df_stats = simulate_group_many(
+            group_for_mc,
+            df_teams,
+            team_ratings,
+            n_sim=n_group_sim,
+        )
+
+        if df_stats.empty:
+            st.warning("해당 그룹에 팀 데이터가 없습니다.")
+        else:
+            st.subheader(f"그룹 {group_for_mc} 순위 확률 요약")
+            st.dataframe(
+                df_stats,
+                use_container_width=True,
+                hide_index=True,
+            )
+
+            st.caption(
+                f"{n_group_sim}번 조별리그를 돌린 결과입니다. "
+                "각 팀의 1위·2위·3위·4위 확률과 평균 승점/득실차/득점을 보여줍니다."
             )
 
 
