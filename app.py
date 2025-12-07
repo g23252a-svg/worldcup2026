@@ -714,78 +714,93 @@ def main():
     # 3) 다중 시뮬레이션 (승/무/패 확률)
     # -------------------------
     st.header("📊 다중 시뮬레이션 – 승/무/패 확률")
-
-    n_sim = st.slider("시뮬레이션 횟수", min_value=100, max_value=5000, step=100, value=1000)
-
+    
+    n_sim = st.slider(
+        "시뮬레이션 횟수", 
+        min_value=100, max_value=5000, step=100, value=1000
+    )
+    
     if st.button("🔁 다중 시뮬레이션 돌리기"):
-        summary = simulate_many(home_row, away_row, team_ratings, n_sim=n_sim)
-
-        home_name = home_row["team_name_ko"]
-        away_name = away_row["team_name_ko"]
-
-        home_wins = summary["home_wins"]
-        draws = summary["draws"]
-        away_wins = summary["away_wins"]
-
-        p_home = home_wins / n_sim * 100
-        p_draw = draws / n_sim * 100
-        p_away = away_wins / n_sim * 100
-
-        avg_home_goals = summary["avg_home_goals"]
-        avg_away_goals = summary["avg_away_goals"]
-
-        meta_example = summary["meta_example"]
-
-        st.subheader("요약")
-
-        c1, c2, c3 = st.columns(3)
-        c1.metric(f"{home_name} 승", f"{p_home:.1f}%", f"{home_wins} / {n_sim}")
-        c2.metric("무승부", f"{p_draw:.1f}%", f"{draws} / {n_sim}")
-        c3.metric(f"{away_name} 승", f"{p_away:.1f}%", f"{away_wins} / {n_sim}")
-
-        st.caption(
-            f"평균 스코어: {home_name} {avg_home_goals:.2f} - {avg_away_goals:.2f} {away_name}"
-        )
-
-        src_map = {
-            "players_csv": "선수 능력치 기반",
-            "seeding_pot": "포트 기반 (임시)",
-        }
-
-        st.caption(
-            f"Elo(예시)  홈: {meta_example['elo_home']:.1f} ({src_map.get(meta_example['src_home'], meta_example['src_home'])})  |  "
-            f"원정: {meta_example['elo_away']:.1f} ({src_map.get(meta_example['src_away'], meta_example['src_away'])})"
-        )
-        st.caption(
-            f"기대 득점 λ(예시)  홈: {meta_example['lam_home']:.2f}  /  원정: {meta_example['lam_away']:.2f}"
-        )
-
-        score_counts = summary["score_counts"]
-        rows = [
-            {"home_goals": gh, "away_goals": ga, "count": cnt, "prob_%": cnt / n_sim * 100}
-            for (gh, ga), cnt in score_counts.items()
-        ]
-        rows_sorted = sorted(rows, key=lambda x: x["count"], reverse=True)[:5]
-
-        if rows_sorted:
-            df_scores = pd.DataFrame(rows_sorted)
-            df_scores = df_scores.rename(
-                columns={
-                    "home_goals": f"{home_name} 골",
-                    "away_goals": f"{away_name} 골",
-                    "count": "횟수",
-                    "prob_%": "확률(%)",
-                }
-            )
-            st.table(df_scores)
+        # ✅ 안전장치 추가
+        if home_row is None or away_row is None:
+            st.warning("홈/원정 팀을 서로 다르게 선택한 뒤에만 다중 시뮬레이션을 실행할 수 있습니다.")
         else:
-            st.caption("스코어 데이터가 없습니다.")
-
-        st.info(
-            f"{n_sim}번의 시뮬레이션 결과입니다. "
-            "KOR / JPN은 players_2026.csv의 선수 능력치를 기반으로 팀 레이팅을 계산하고, "
-            "다른 팀은 포트(seeding_pot) 기반 레이팅을 사용합니다."
-        )
+            summary = simulate_many(home_row, away_row, team_ratings, n_sim=n_sim)
+    
+            home_name = home_row["team_name_ko"]
+            away_name = away_row["team_name_ko"]
+    
+            home_wins = summary["home_wins"]
+            draws = summary["draws"]
+            away_wins = summary["away_wins"]
+    
+            p_home = home_wins / n_sim * 100
+            p_draw = draws / n_sim * 100
+            p_away = away_wins / n_sim * 100
+    
+            avg_home_goals = summary["avg_home_goals"]
+            avg_away_goals = summary["avg_away_goals"]
+    
+            meta_example = summary["meta_example"]
+    
+            st.subheader("요약")
+    
+            c1, c2, c3 = st.columns(3)
+            c1.metric(f"{home_name} 승", f"{p_home:.1f}%", f"{home_wins} / {n_sim}")
+            c2.metric("무승부", f"{p_draw:.1f}%", f"{draws} / {n_sim}")
+            c3.metric(f"{away_name} 승", f"{p_away:.1f}%", f"{away_wins} / {n_sim}")
+    
+            st.caption(
+                f"평균 스코어: {home_name} {avg_home_goals:.2f} - {avg_away_goals:.2f} {away_name}"
+            )
+    
+            src_map = {
+                "players_csv": "선수 능력치 기반",
+                "seeding_pot": "포트 기반 (임시)",
+            }
+    
+            st.caption(
+                f"Elo(예시)  홈: {meta_example['elo_home']:.1f} "
+                f"({src_map.get(meta_example['src_home'], meta_example['src_home'])})  |  "
+                f"원정: {meta_example['elo_away']:.1f} "
+                f"({src_map.get(meta_example['src_away'], meta_example['src_away'])})"
+            )
+            st.caption(
+                f"기대 득점 λ(예시)  홈: {meta_example['lam_home']:.2f}  /  "
+                f"원정: {meta_example['lam_away']:.2f}"
+            )
+    
+            score_counts = summary["score_counts"]
+            rows = [
+                {
+                    "home_goals": gh,
+                    "away_goals": ga,
+                    "count": cnt,
+                    "prob_%": cnt / n_sim * 100,
+                }
+                for (gh, ga), cnt in score_counts.items()
+            ]
+            rows_sorted = sorted(rows, key=lambda x: x["count"], reverse=True)[:5]
+    
+            if rows_sorted:
+                df_scores = pd.DataFrame(rows_sorted)
+                df_scores = df_scores.rename(
+                    columns={
+                        "home_goals": f"{home_name} 골",
+                        "away_goals": f"{away_name} 골",
+                        "count": "횟수",
+                        "prob_%": "확률(%)",
+                    }
+                )
+                st.table(df_scores)
+            else:
+                st.caption("스코어 데이터가 없습니다.")
+    
+            st.info(
+                f"{n_sim}번의 시뮬레이션 결과입니다. "
+                "KOR / JPN은 players_2026.csv의 선수 능력치를 기반으로 팀 레이팅을 계산하고, "
+                "다른 팀은 포트(seeding_pot) 기반 레이팅을 사용합니다."
+            )
 
     st.markdown("---")
 
