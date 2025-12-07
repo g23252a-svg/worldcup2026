@@ -7,10 +7,66 @@ import numpy as np
 # =========================
 # 데이터 로딩
 # =========================
+
+def assign_group_pos(group_letter: str, seeding_pot: int) -> int:
+    """
+    2026 월드컵 포트 규정을 반영해서
+    각 팀의 조 내 포지션(1~4번 자리)을 계산한다.
+    - 포트 1: 항상 1번 자리 (A1, B1, ..., L1)
+    - 포트 2: A3 B4 C2 D3 E4 F2 G3 H4 I2 J3 K4 L2
+    - 포트 3: A2 B3 C4 D2 E3 F4 G2 H3 I4 J2 K3 L4
+    - 포트 4: A4 B2 C3 D4 E2 F3 G4 H2 I3 J4 K2 L3
+    """
+    g = str(group_letter).upper()
+    p = int(seeding_pot)
+
+    if p == 1:
+        return 1  # 개최국/포트1은 무조건 1번 슬롯
+
+    block1 = {"A", "D", "G", "J"}
+    block2 = {"B", "E", "H", "K"}
+    block3 = {"C", "F", "I", "L"}
+
+    if p == 2:
+        if g in block1:
+            return 3
+        if g in block2:
+            return 4
+        if g in block3:
+            return 2
+    elif p == 3:
+        if g in block1:
+            return 2
+        if g in block2:
+            return 3
+        if g in block3:
+            return 4
+    elif p == 4:
+        if g in block1:
+            return 4
+        if g in block2:
+            return 2
+        if g in block3:
+            return 3
+
+    raise ValueError(f"예상치 못한 group/pot 조합: {group_letter}/{seeding_pot}")
+
+
 @st.cache_data
 def load_teams():
     df = pd.read_csv("data/teams_2026.csv")
-    df = df.sort_values(["group_letter", "seeding_pot", "team_code"])
+
+    # ✅ NEW: 조 내 포지션(1~4번) 계산
+    df["group_pos"] = df.apply(
+        lambda r: assign_group_pos(r["group_letter"], r["seeding_pot"]),
+        axis=1,
+    )
+
+    # ✅ NEW: 보기 편하게 "A1, B3" 같은 슬롯 문자열도 추가
+    df["slot"] = df["group_letter"] + df["group_pos"].astype(str)
+
+    # 정렬 기준도 seeding이 아니라 실제 슬롯 기준으로 정렬
+    df = df.sort_values(["group_letter", "group_pos", "team_code"])
     return df
 
 
@@ -229,32 +285,68 @@ def simulate_many(
     return summary
 
 
-# =========================
-# 조별리그(그룹) 시뮬레이션
-# =========================
+# 파일 상단 전역
+GROUP_FIXTURE_TEMPLATE = [
+    # (matchday, home_pos, away_pos)
+    (1, 1, 2),  # MD1: 1 vs 2
+    (1, 3, 4),  # MD1: 3 vs 4
+    (2, 1, 3),  # MD2: 1 vs 3
+    (2, 4, 2),  # MD2: 4 vs 2
+    (3, 4, 1),  # MD3: 4 vs 1
+    (3, 2, 3),  # MD3: 2 vs 3
+]
+
+
 def build_group_fixtures_from_df(df_group: pd.DataFrame):
     """
     그룹 내 4개 팀을 기준 일정으로 변환
-    - seeding_pot, team_code 순으로 정렬한 뒤
-      t1,t2,t3,t4에 대해:
-      MD1: t1-t2, t3-t4
-      MD2: t1-t3, t2-t4
-      MD3: t1-t4, t2-t3
+    - group_pos(1~4)에 따라 팀을 매핑한 뒤
+      템플릿에 따라 6경기(3라운드)를 만든다.
     """
-    grp_sorted = df_group.sort_values(["seeding_pot", "team_code"])
-    teams = grp_sorted["team_code"].tolist()
-    if len(teams) != 4:
+    grp = df_group.copy()
+
+    # group_pos가 없으면 (혹시 모를 호환성) 옛 방식으로 fallback
+    if "group_pos" not in grp.columns:
+        grp_sorted = grp.sort_values(["seeding_pot", "team_code"])
+        teams = grp_sorted["team_code"].tolist()
+        if len(teams) != 4:
+            return []
+        t1, t2, t3, t4 = teams
+        fixtures = [
+            (1, t1, t2),
+            (1, t3, t4),
+            (2, t1, t3),
+            (2, t2, t4),
+            (3, t1, t4),
+            (3, t2, t3),
+        ]
+        return fixtures
+
+    # ✅ NEW: group_pos를 이용한 편성
+    mapping = {int(row["group_pos"]): row["team_code"] for _, row in grp.iterrows()}
+    if set(mapping.keys()) != {1, 2, 3, 4}:
         return []
 
-    t1, t2, t3, t4 = teams
-    fixtures = [
-        (1, t1, t2),
-        (1, t3, t4),
-        (2, t1, t3),
-        (2, t2, t4),
-        (3, t1, t4),
-        (3, t2, t3),
-    ]
+    fixtures = []
+    for md, hp, ap in GROUP_FIXTURE_TEMPLATE:
+        home_code = mapping[hp]
+        away_code = mapping[ap]
+        fixtures.append((md, home_code, away_code))
+
+    return fixtures
+
+    # ✅ NEW: group_pos를 이용한 편성
+    mapping = {int(row["group_pos"]): row["team_code"] for _, row in grp.iterrows()}
+    if set(mapping.keys()) != {1, 2, 3, 4}:
+        # 혹시 누락/중복 등 있으면 그냥 일정 안 만든다
+        return []
+
+    fixtures = []
+    for md, (hp, ap) in enumerate(GROUP_FIXTURE_TEMPLATE, start=1):
+        home_code = mapping[hp]
+        away_code = mapping[ap]
+        fixtures.append((md, home_code, away_code))
+
     return fixtures
 
 
@@ -388,6 +480,18 @@ def main():
         df_view = df_view[df_view["group_letter"] == selected_group]
 
     st.subheader("팀 리스트")
+    cols = [
+        "group_letter",
+        "slot",          # A1, B3 이런 거
+        "team_code",
+        "team_name_ko",
+        "confed",
+        "seeding_pot",
+        "is_host",
+        "notes",
+    ]
+    cols_existing = [c for c in cols if c in df_view.columns]
+    
     st.dataframe(
         df_view,
         use_container_width=True,
@@ -417,7 +521,10 @@ def main():
 
     def format_team_label(code: str) -> str:
         row = df_teams[df_teams["team_code"] == code].iloc[0]
-        return f"{row['team_name_ko']} ({code}) - 그룹 {row['group_letter']} 포트 {row['seeding_pot']}"
+        return (
+            f"{row['team_name_ko']} ({code}) "
+            f"- 그룹 {row['group_letter']} / 슬롯 {row['slot']} / 포트 {row['seeding_pot']}"
+        )
 
     colA, colB = st.columns(2)
 
@@ -656,7 +763,7 @@ def main():
             )
 
             st.caption(
-                "일정은 그룹 내 팀을 시드 순서로 정렬하여 "
+                "일정은 그룹 내 팀의 슬롯(A1~L4, group_pos)을 기준으로 "
                 "총 3라운드(각 팀 3경기) 라운드 로빈 형태로 자동 생성됩니다."
             )
 
