@@ -794,11 +794,19 @@ def render_title_prediction(df_teams, team_ratings):
     cols_order = ["rank", "team", "group", "champion_pct", "final_pct",
                   "semi_pct", "quarter_pct", "r16_pct", "r32_pct"]
     show = df_tour[cols_order].rename(columns=ren)
-    pct_cols = ["우승%", "결승%", "4강%", "8강%", "16강%", "32강%"]
+    champ_max = max(float(show["우승%"].max()), 1.0)
     st.dataframe(
-        show.style.format({c: "{:.1f}" for c in pct_cols})
-        .background_gradient(subset=["우승%"], cmap="YlOrBr"),
-        use_container_width=True, hide_index=True, height=460,
+        show, use_container_width=True, hide_index=True, height=460,
+        column_config={
+            "순위": st.column_config.NumberColumn("순위", width="small"),
+            "우승%": st.column_config.ProgressColumn(
+                "우승%", format="%.1f", min_value=0.0, max_value=champ_max),
+            "결승%": st.column_config.NumberColumn("결승%", format="%.1f"),
+            "4강%": st.column_config.NumberColumn("4강%", format="%.1f"),
+            "8강%": st.column_config.NumberColumn("8강%", format="%.1f"),
+            "16강%": st.column_config.NumberColumn("16강%", format="%.1f"),
+            "32강%": st.column_config.NumberColumn("32강%", format="%.1f"),
+        },
     )
 
     # ── 한국/일본 ──
@@ -867,11 +875,17 @@ def render_group_stage(df_teams, team_ratings):
     }
     show = df_stats.drop(columns=["team_code", "진출%"], errors="ignore").rename(columns=ren)
     st.dataframe(
-        show.style.format({
-            "1위%": "{:.1f}", "2위%": "{:.1f}", "3위%": "{:.1f}", "4위%": "{:.1f}",
-            "평균승점": "{:.2f}", "평균득실": "{:+.2f}", "평균득점": "{:.2f}",
-        }).background_gradient(subset=["1위%"], cmap="Greens"),
-        use_container_width=True, hide_index=True,
+        show, use_container_width=True, hide_index=True,
+        column_config={
+            "1위%": st.column_config.ProgressColumn(
+                "1위%", format="%.1f", min_value=0.0, max_value=100.0),
+            "2위%": st.column_config.NumberColumn("2위%", format="%.1f"),
+            "3위%": st.column_config.NumberColumn("3위%", format="%.1f"),
+            "4위%": st.column_config.NumberColumn("4위%", format="%.1f"),
+            "평균승점": st.column_config.NumberColumn("평균승점", format="%.2f"),
+            "평균득실": st.column_config.NumberColumn("평균득실", format="%+.2f"),
+            "평균득점": st.column_config.NumberColumn("평균득점", format="%.2f"),
+        },
     )
 
 
