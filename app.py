@@ -632,535 +632,432 @@ def simulate_all_groups_many(
 
 
 # =========================
-# Streamlit UI
 # =========================
-def main():
-    st.set_page_config(page_title="World Cup 2026 – KOR/JPN Prototype", layout="wide")
-    st.title("🏆 World Cup 2026 – Team & Match Simulator (KOR/JPN Prototype)")
+# Streamlit UI  (redesigned: tabbed layout + clean theme)
+# =========================
+import altair as alt
 
-    df_teams = load_teams()
-    df_players = load_players()
-    team_ratings = build_team_ratings(df_players)
 
-    # 실측 Elo 테이블 로딩 + 전역 캐시에 주입
-    global _TEAM_ELO_CACHE
-    team_elo = load_team_elo()
-    _TEAM_ELO_CACHE = team_elo
+CONFED_LABEL = {
+    "AFC": "아시아",
+    "CAF": "아프리카",
+    "CONCACAF": "북중미",
+    "CONMEBOL": "남미",
+    "OFC": "오세아니아",
+    "UEFA": "유럽",
+}
 
-    # -------------------------
-    # 1) 팀 마스터 + 간단 통계
-    # -------------------------
-    st.sidebar.header("필터")
 
-    group_options = ["ALL"] + sorted(df_teams["group_letter"].unique().tolist())
-    selected_group = st.sidebar.selectbox("그룹 선택", group_options)
+def _fmt_pct(v):
+    return f"{v:.1f}"
 
-    confed_all = sorted(df_teams["confed"].unique().tolist())
-    selected_confed = st.sidebar.multiselect(
-        "컨페더레이션 선택",
-        options=confed_all,
-        default=confed_all,
+
+def _elo_table(df_teams, team_ratings):
+    """팀별 최종 Elo + 소스 테이블 (정렬용)."""
+    rows = []
+    for _, r in df_teams.iterrows():
+        elo, src = get_team_elo(r, team_ratings)
+        rows.append({
+            "team_code": r["team_code"],
+            "team": r["team_name_ko"],
+            "group": r["group_letter"],
+            "confed": r["confed"],
+            "elo": round(elo, 0),
+            "source": src,
+        })
+    return pd.DataFrame(rows).sort_values("elo", ascending=False).reset_index(drop=True)
+
+
+def _hbar(df, x, y, title, color="#e0aa3e", fmt=".1f", height=None):
+    """확률순으로 정렬된 가로 막대 (Altair)."""
+    n = len(df)
+    h = height or max(220, n * 30)
+    chart = (
+        alt.Chart(df)
+        .mark_bar(cornerRadiusEnd=4, color=color)
+        .encode(
+            x=alt.X(f"{x}:Q", title=None, axis=alt.Axis(grid=True, format="~s")),
+            y=alt.Y(f"{y}:N", sort="-x", title=None),
+            tooltip=[
+                alt.Tooltip(f"{y}:N", title="팀"),
+                alt.Tooltip(f"{x}:Q", title=title, format=fmt),
+            ],
+        )
+        .properties(height=h)
     )
+    text = chart.mark_text(align="left", dx=4, color="#f2f2f2").encode(
+        text=alt.Text(f"{x}:Q", format=fmt)
+    )
+    return chart + text
 
-    df_view = df_teams[df_teams["confed"].isin(selected_confed)]
-    if selected_group != "ALL":
-        df_view = df_view[df_view["group_letter"] == selected_group]
 
-    st.subheader("팀 리스트")
-    cols = [
-        "group_letter",
-        "slot",          # A1, B3 ...
-        "team_code",
-        "team_name_ko",
-        "confed",
-        "seeding_pot",
-        "is_host",
-        "notes",
-    ]
-    cols_existing = [c for c in cols if c in df_view.columns]
+# -----------------------------------------------------------------
+def render_overview(df_teams, team_ratings):
+    st.subheader("대회 한눈에 보기")
 
-    st.dataframe(
-        df_view[cols_existing],
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("참가국", f"{len(df_teams)}")
+    c2.metric("조", f"{df_teams['group_letter'].nunique()}")
+    n_players = df_teams["team_code"].isin(team_ratings.keys()).sum()
+    c3.metric("선수데이터 보유국", f"{n_players}")
+    c4.metric("기간", "6/11 – 7/19")
+
+    st.divider()
+    st.caption("팀 강도 (블렌딩 Elo 기준, 상위 20개국)")
+    elo_df = _elo_table(df_teams, team_ratings)
+    st.altair_chart(
+        _hbar(elo_df.head(20), "elo", "team", "Elo", color="#5b8def", fmt=".0f"),
         use_container_width=True,
-        hide_index=True,
     )
 
-    col1, col2 = st.columns(2)
+    with st.expander("전체 팀 Elo 표 보기"):
+        show = elo_df.rename(columns={
+            "team": "팀", "group": "조", "confed": "대륙",
+            "elo": "Elo", "source": "산출방식",
+        })
+        show["대륙"] = show["대륙"].map(lambda c: CONFED_LABEL.get(c, c))
+        st.dataframe(show.drop(columns=["team_code"]), use_container_width=True, hide_index=True)
 
-    with col1:
-        st.subheader("그룹별 팀 수")
-        group_counts = df_teams.groupby("group_letter")["team_code"].count()
-        st.bar_chart(group_counts)
 
-    with col2:
-        st.subheader("컨페더레이션별 팀 수")
-        confed_counts = df_teams.groupby("confed")["team_code"].count()
-        st.bar_chart(confed_counts)
-
-    st.markdown("---")
-
-    # -------------------------
-    # 2) 단일 경기 + 선수 미리보기
-    # -------------------------
-    st.header("⚽ 단일 경기 시뮬레이션")
-
-    team_codes = df_teams["team_code"].tolist()
-
-    def format_team_label(code: str) -> str:
-        row = df_teams[df_teams["team_code"] == code].iloc[0]
-        return (
-            f"{row['team_name_ko']} ({code}) "
-            f"- 그룹 {row['group_letter']} / 슬롯 {row['slot']} / 포트 {row['seeding_pot']}"
-        )
-
-    # 기본값: 아직 시뮬 불가 상태
-    home_row = None
-    away_row = None
-
-    colA, colB = st.columns(2)
-
-    with colA:
-        home_code = st.selectbox(
-            "홈 팀 선택",
-            options=team_codes,
-            format_func=format_team_label,
-        )
-
-    with colB:
-        default_idx = 1 if len(team_codes) > 1 else 0
-        away_code = st.selectbox(
-            "원정 팀 선택",
-            options=team_codes,
-            index=default_idx,
-            format_func=format_team_label,
-        )
-
-    if home_code == away_code:
-        st.warning("홈 팀과 원정 팀을 다르게 선택해 주세요.")
-    else:
-        home_row = df_teams[df_teams["team_code"] == home_code].iloc[0]
-        away_row = df_teams[df_teams["team_code"] == away_code].iloc[0]
-
-        st.subheader("선수 데이터 미리 보기")
-
-        colP1, colP2 = st.columns(2)
-
-        with colP1:
-            home_players = df_players[df_players["team_code"] == home_code]
-            if home_players.empty:
-                st.caption(f"🔍 {home_row['team_name_ko']} 선수 데이터가 아직 없습니다.")
-            else:
-                st.markdown(f"**{home_row['team_name_ko']} ({home_code}) 선수 목록**")
-                st.dataframe(
-                    home_players[
-                        [
-                            "player_name_ko",
-                            "position",
-                            "is_starting",
-                            "attack",
-                            "defense",
-                            "passing",
-                            "physical",
-                            "mental",
-                            "gk",
-                        ]
-                    ],
-                    use_container_width=True,
-                    hide_index=True,
-                )
-
-        with colP2:
-            away_players = df_players[df_players["team_code"] == away_code]
-            if away_players.empty:
-                st.caption(f"🔍 {away_row['team_name_ko']} 선수 데이터가 아직 없습니다.")
-            else:
-                st.markdown(f"**{away_row['team_name_ko']} ({away_code}) 선수 목록**")
-                st.dataframe(
-                    away_players[
-                        [
-                            "player_name_ko",
-                            "position",
-                            "is_starting",
-                            "attack",
-                            "defense",
-                            "passing",
-                            "physical",
-                            "mental",
-                            "gk",
-                        ]
-                    ],
-                    use_container_width=True,
-                    hide_index=True,
-                )
-
-        st.markdown("---")
-
-        # 단일 경기 버튼
-        if st.button("🧮 한 경기 시뮬레이션 돌리기"):
-            goals_home, goals_away, meta = simulate_match(home_row, away_row, team_ratings)
-
-            st.subheader("단일 경기 결과")
-            st.markdown(
-                f"### **{home_row['team_name_ko']} {goals_home} - {goals_away} {away_row['team_name_ko']}**"
-            )
-
-            src_map = {
-                "players_csv": "선수 능력치 기반",
-                "seeding_pot": "포트 기반 (임시)",
-            }
-
-            st.caption(
-                f"홈 Elo: {meta['elo_home']:.1f} "
-                f"({src_map.get(meta['src_home'], meta['src_home'])})  |  "
-                f"원정 Elo: {meta['elo_away']:.1f} "
-                f"({src_map.get(meta['src_away'], meta['src_away'])})"
-            )
-            st.caption(
-                f"기대 득점 λ  홈: {meta['lam_home']:.2f}  /  원정: {meta['lam_away']:.2f}"
-            )
-
-        st.markdown("---")
-
-    # -------------------------
-    # 3) 다중 시뮬레이션 (승/무/패 확률)
-    # -------------------------
-    st.header("📊 다중 시뮬레이션 – 승/무/패 확률")
-
-    n_sim = st.slider(
-        "시뮬레이션 횟수",
-        min_value=100,
-        max_value=5000,
-        step=100,
-        value=1000,
-    )
-
-    if st.button("🔁 다중 시뮬레이션 돌리기"):
-        if home_row is None or away_row is None:
-            st.warning("홈/원정 팀을 서로 다르게 선택한 뒤에만 다중 시뮬레이션을 실행할 수 있습니다.")
-        else:
-            summary = simulate_many(home_row, away_row, team_ratings, n_sim=n_sim)
-
-            home_name = home_row["team_name_ko"]
-            away_name = away_row["team_name_ko"]
-
-            home_wins = summary["home_wins"]
-            draws = summary["draws"]
-            away_wins = summary["away_wins"]
-
-            p_home = home_wins / n_sim * 100
-            p_draw = draws / n_sim * 100
-            p_away = away_wins / n_sim * 100
-
-            avg_home_goals = summary["avg_home_goals"]
-            avg_away_goals = summary["avg_away_goals"]
-
-            meta_example = summary["meta_example"]
-
-            st.subheader("요약")
-
-            c1, c2, c3 = st.columns(3)
-            c1.metric(f"{home_name} 승", f"{p_home:.1f}%", f"{home_wins} / {n_sim}")
-            c2.metric("무승부", f"{p_draw:.1f}%", f"{draws} / {n_sim}")
-            c3.metric(f"{away_name} 승", f"{p_away:.1f}%", f"{away_wins} / {n_sim}")
-
-            st.caption(
-                f"평균 스코어: {home_name} {avg_home_goals:.2f} - {avg_away_goals:.2f} {away_name}"
-            )
-
-            src_map = {
-                "players_csv": "선수 능력치 기반",
-                "seeding_pot": "포트 기반 (임시)",
-            }
-
-            st.caption(
-                f"Elo(예시)  홈: {meta_example['elo_home']:.1f} "
-                f"({src_map.get(meta_example['src_home'], meta_example['src_home'])})  |  "
-                f"원정: {meta_example['elo_away']:.1f} "
-                f"({src_map.get(meta_example['src_away'], meta_example['src_away'])})"
-            )
-            st.caption(
-                f"기대 득점 λ(예시)  홈: {meta_example['lam_home']:.2f}  /  "
-                f"원정: {meta_example['lam_away']:.2f}"
-            )
-
-            score_counts = summary["score_counts"]
-            rows = [
-                {
-                    "home_goals": gh,
-                    "away_goals": ga,
-                    "count": cnt,
-                    "prob_%": cnt / n_sim * 100,
-                }
-                for (gh, ga), cnt in score_counts.items()
-            ]
-            rows_sorted = sorted(rows, key=lambda x: x["count"], reverse=True)[:5]
-
-            if rows_sorted:
-                df_scores = pd.DataFrame(rows_sorted)
-                df_scores = df_scores.rename(
-                    columns={
-                        "home_goals": f"{home_name} 골",
-                        "away_goals": f"{away_name} 골",
-                        "count": "횟수",
-                        "prob_%": "확률(%)",
-                    }
-                )
-                st.table(df_scores)
-            else:
-                st.caption("스코어 데이터가 없습니다.")
-
-            st.info(
-                f"{n_sim}번의 시뮬레이션 결과입니다. "
-                "KOR / JPN은 players_2026.csv의 선수 능력치를 기반으로 팀 레이팅을 계산하고, "
-                "다른 팀은 포트(seeding_pot) 기반 레이팅을 사용합니다."
-            )
-
-    st.markdown("---")
-
-    # -------------------------
-    # 4) 조별리그 – 그룹 단일 시뮬레이션
-    # -------------------------
-    st.header("🧮 조별리그 단일 시뮬레이션 (그룹별)")
-
-    group_for_sim = st.selectbox(
-        "조별리그에서 시뮬레이션할 그룹을 선택하세요",
-        sorted(df_teams["group_letter"].unique().tolist()),
-        index=0,
-    )
-
-    if st.button("🎯 선택한 그룹 한 번 시뮬레이션"):
-        df_table, df_matches = simulate_group_once(
-            group_for_sim, df_teams, team_ratings
-        )
-
-        if df_table.empty:
-            st.warning("해당 그룹에 팀 데이터가 없습니다.")
-        else:
-            st.subheader(f"그룹 {group_for_sim} 최종 순위표")
-            st.dataframe(
-                df_table[
-                    [
-                        "Rank",
-                        "team_name_ko",
-                        "team_code",
-                        "P",
-                        "W",
-                        "D",
-                        "L",
-                        "GF",
-                        "GA",
-                        "GD",
-                        "PTS",
-                    ]
-                ],
-                use_container_width=True,
-                hide_index=True,
-            )
-
-            st.subheader(f"그룹 {group_for_sim} 경기 결과")
-            st.table(
-                df_matches[
-                    [
-                        "matchday",
-                        "home_team",
-                        "away_team",
-                        "score",
-                        "home_goals",
-                        "away_goals",
-                    ]
-                ]
-            )
-
-            st.caption(
-                "일정은 그룹 내 팀의 슬롯(A1~L4, group_pos)을 기준으로 "
-                "총 3라운드(각 팀 3경기) 라운드 로빈 형태로 자동 생성됩니다."
-            )
-
-    st.markdown("---")
-
-    # -------------------------
-    # 5) 조별리그 – 다중 시뮬레이션 (그룹별 순위 확률)
-    # -------------------------
-    st.header("📈 조별리그 다중 시뮬레이션 (순위 확률)")
-
-    group_for_mc = st.selectbox(
-        "다중 시뮬레이션할 그룹을 선택하세요",
-        sorted(df_teams["group_letter"].unique().tolist()),
-        index=0,
-        key="group_for_mc",
-    )
-
-    n_group_sim = st.slider(
-        "그룹 시뮬레이션 횟수",
-        min_value=100,
-        max_value=5000,
-        step=100,
-        value=1000,
-        key="n_group_sim",
-    )
-
-    if st.button("📈 선택한 그룹 다중 시뮬레이션 돌리기"):
-        df_stats = simulate_group_many(
-            group_for_mc,
-            df_teams,
-            team_ratings,
-            n_sim=n_group_sim,
-        )
-
-        if df_stats.empty:
-            st.warning("해당 그룹에 팀 데이터가 없습니다.")
-        else:
-            st.subheader(f"그룹 {group_for_mc} 순위 확률 요약")
-            st.dataframe(
-                df_stats,
-                use_container_width=True,
-                hide_index=True,
-            )
-
-            st.caption(
-                f"{n_group_sim}번 조별리그를 돌린 결과입니다. "
-                "각 팀의 1위·2위·3위·4위 확률과 평균 승점/득실차/득점을 보여줍니다."
-            )
-
-    st.markdown("---")
-
-    # -------------------------
-    # 6) 전체 조별리그 – 다중 시뮬레이션 (전 팀 요약)
-    # -------------------------
-    st.header("🌍 전체 조별리그 다중 시뮬레이션 (전 팀 요약)")
-
-    n_all_sim = st.slider(
-        "전체 조별리그 시뮬레이션 횟수",
-        min_value=100,
-        max_value=5000,
-        step=100,
-        value=1000,
-        key="n_all_sim",
-    )
-
-    if st.button("🌍 전체 그룹 한 번에 시뮬레이션"):
-        df_all_stats = simulate_all_groups_many(
-            df_teams,
-            team_ratings,
-            n_sim=n_all_sim,
-        )
-
-        if df_all_stats.empty:
-            st.warning("조별리그 통계를 계산할 수 있는 팀 데이터가 없습니다.")
-        else:
-            show_cols = [
-                "group_letter",
-                "team_name_ko",
-                "team_code",
-                "P1(1위%)",
-                "P2(2위%)",
-                "P3(3위%)",
-                "P4(4위%)",
-                "P_qual(1~2위%)",
-                "avg_PTS",
-                "avg_GD",
-                "avg_GF",
-            ]
-            show_cols = [c for c in show_cols if c in df_all_stats.columns]
-
-            st.subheader("전체 팀 순위 확률 및 진출 확률 요약")
-            st.dataframe(
-                df_all_stats[show_cols],
-                use_container_width=True,
-                hide_index=True,
-            )
-
-            # KOR / JPN만 별도 표시
-            mask_kor_jpn = df_all_stats["team_code"].isin(["KOR", "JPN"])
-            df_kor_jpn = df_all_stats[mask_kor_jpn]
-
-            if not df_kor_jpn.empty:
-                st.subheader("🇰🇷 KOR / 🇯🇵 JPN 요약")
-                st.dataframe(
-                    df_kor_jpn[show_cols],
-                    use_container_width=True,
-                    hide_index=True,
-                )
-
-            st.caption(
-                f"{n_all_sim}번 전체 조별리그를 돌린 결과입니다. "
-                "각 팀의 1~4위 확률과 평균 승점/득실차/득점을 한 번에 볼 수 있으며, "
-                "P_qual(1~2위%)는 해당 팀이 조 1~2위로 올라갈 확률을 의미합니다."
-            )
-
-    # =====================================================================
-    # 🏆 우승 예측 (전체 토너먼트 몬테카를로)
-    # =====================================================================
-    st.header("🏆 우승 예측 – 전체 토너먼트 시뮬레이션")
+# -----------------------------------------------------------------
+def render_title_prediction(df_teams, team_ratings):
+    st.subheader("🏆 우승 예측")
     st.caption(
-        "조별리그(72경기) → 32강 → 16강 → 8강 → 4강 → 결승까지 "
-        "대회 전체를 수천 번 돌려 각 팀의 단계별 진출 확률과 우승 확률을 계산합니다. "
-        "32강 대진은 FIFA 공식 규정(매치 73~88) + 베스트 3위 8팀 배정표(Annex C, 495개 시나리오)를 그대로 적용합니다."
+        "조별리그(72경기) → 32강 → 16강 → 8강 → 4강 → 결승까지 대회 전체를 "
+        "수천 번 시뮬레이션합니다. 32강 대진은 FIFA 공식 규정 + 베스트 3위 8팀 "
+        "배정표(Annex C 495 시나리오)를 그대로 적용합니다."
     )
 
-    n_tour = st.slider(
-        "토너먼트 시뮬레이션 횟수",
-        min_value=1000,
-        max_value=50000,
-        step=1000,
-        value=10000,
-        key="n_tour",
+    col_a, col_b = st.columns([3, 1])
+    n_tour = col_a.slider(
+        "시뮬레이션 횟수", 1000, 50000, 10000, step=1000, key="n_tour_new"
     )
+    col_b.write("")
+    col_b.write("")
+    run = col_b.button("🎲 시뮬레이션 실행", use_container_width=True, type="primary")
 
-    if st.button("🏆 우승 확률 계산"):
+    if run:
         try:
             import tournament as TNM
         except Exception as e:
             st.error(f"tournament 모듈을 불러오지 못했습니다: {e}")
-        else:
-            with st.spinner(f"{n_tour:,}회 대회 시뮬레이션 중..."):
-                df_tour = TNM.simulate_tournament_fast(
-                    df_teams,
-                    team_ratings,
-                    get_team_elo,
-                    n_sim=n_tour,
-                )
-
-            st.subheader("🥇 우승 확률 순위")
-            show = df_tour.copy()
-            ren = {
-                "rank": "순위",
-                "team": "팀",
-                "group": "조",
-                "champion_pct": "우승%",
-                "final_pct": "결승%",
-                "semi_pct": "4강%",
-                "quarter_pct": "8강%",
-                "r16_pct": "16강%",
-                "r32_pct": "32강%",
-            }
-            cols = ["rank", "team", "group", "champion_pct", "final_pct",
-                    "semi_pct", "quarter_pct", "r16_pct", "r32_pct"]
-            show = show[cols].rename(columns=ren)
-            for c in ["우승%", "결승%", "4강%", "8강%", "16강%", "32강%"]:
-                show[c] = show[c].map(lambda v: f"{v:.1f}")
-
-            st.dataframe(show, use_container_width=True, hide_index=True)
-
-            # 상위 12팀 우승확률 바차트
-            top = df_tour.head(12).set_index("team")["champion_pct"]
-            st.subheader("우승 확률 TOP 12")
-            st.bar_chart(top)
-
-            # KOR/JPN 별도 하이라이트
-            kj = df_tour[df_tour["team_code"].isin(["KOR", "JPN"])]
-            if not kj.empty:
-                st.subheader("🇰🇷 KOR / 🇯🇵 JPN")
-                kjs = kj[cols].rename(columns=ren)
-                for c in ["우승%", "결승%", "4강%", "8강%", "16강%", "32강%"]:
-                    kjs[c] = kjs[c].map(lambda v: f"{v:.1f}")
-                st.dataframe(kjs, use_container_width=True, hide_index=True)
-
-            st.caption(
-                f"{n_tour:,}회 몬테카를로 결과입니다. 우승%의 합은 100%, 결승%의 합은 200%가 됩니다. "
-                "녹아웃 무승부는 Elo 가중 확률(연장+승부차기 대용)로 처리합니다. "
-                "선수 데이터가 없는 팀은 실측 Elo로 대체 평가됩니다."
+            return
+        with st.spinner(f"{n_tour:,}회 대회 시뮬레이션 중..."):
+            df_tour = TNM.simulate_tournament_fast(
+                df_teams, team_ratings, get_team_elo, n_sim=n_tour
             )
+        st.session_state["df_tour"] = df_tour
+        st.session_state["n_tour_done"] = n_tour
+
+    df_tour = st.session_state.get("df_tour")
+    if df_tour is None:
+        st.info("위 버튼을 눌러 우승 확률을 계산하세요. (1만 회 기준 약 2~3초)")
+        return
+
+    # ── 우승후보 TOP 3 카드 ──
+    top3 = df_tour.head(3).reset_index(drop=True)
+    medals = ["🥇", "🥈", "🥉"]
+    cols = st.columns(3)
+    for i, (_, row) in enumerate(top3.iterrows()):
+        cols[i].metric(
+            f"{medals[i]} {row['team']}",
+            f"{row['champion_pct']:.1f}%",
+            help=f"결승 {row['final_pct']:.1f}% · 4강 {row['semi_pct']:.1f}%",
+        )
+
+    st.divider()
+
+    # ── 우승확률 가로 막대 (TOP 12, 정렬됨) ──
+    left, right = st.columns([1, 1])
+    with left:
+        st.markdown("**우승 확률 TOP 12**")
+        st.altair_chart(
+            _hbar(df_tour.head(12)[["team", "champion_pct"]], "champion_pct", "team",
+                  "우승%", color="#e0aa3e", fmt=".1f"),
+            use_container_width=True,
+        )
+    with right:
+        st.markdown("**결승 진출 확률 TOP 12**")
+        st.altair_chart(
+            _hbar(df_tour.head(12)[["team", "final_pct"]], "final_pct", "team",
+                  "결승%", color="#9b6dff", fmt=".1f"),
+            use_container_width=True,
+        )
+
+    # ── 전체 순위표 ──
+    st.markdown("**단계별 진출 확률 (전체)**")
+    ren = {
+        "rank": "순위", "team": "팀", "group": "조",
+        "champion_pct": "우승%", "final_pct": "결승%", "semi_pct": "4강%",
+        "quarter_pct": "8강%", "r16_pct": "16강%", "r32_pct": "32강%",
+    }
+    cols_order = ["rank", "team", "group", "champion_pct", "final_pct",
+                  "semi_pct", "quarter_pct", "r16_pct", "r32_pct"]
+    show = df_tour[cols_order].rename(columns=ren)
+    pct_cols = ["우승%", "결승%", "4강%", "8강%", "16강%", "32강%"]
+    st.dataframe(
+        show.style.format({c: "{:.1f}" for c in pct_cols})
+        .background_gradient(subset=["우승%"], cmap="YlOrBr"),
+        use_container_width=True, hide_index=True, height=460,
+    )
+
+    # ── 한국/일본 ──
+    kj = df_tour[df_tour["team_code"].isin(["KOR", "JPN"])]
+    if not kj.empty:
+        st.divider()
+        st.markdown("**🇰🇷 한국 · 🇯🇵 일본**")
+        kcols = st.columns(len(kj) * 3)
+        idx = 0
+        for _, row in kj.iterrows():
+            kcols[idx].metric(f"{row['team']} 우승", f"{row['champion_pct']:.2f}%")
+            kcols[idx + 1].metric("16강 진출", f"{row['r16_pct']:.1f}%")
+            kcols[idx + 2].metric("32강 진출", f"{row['r32_pct']:.1f}%")
+            idx += 3
+
+    st.caption(
+        f"{st.session_state.get('n_tour_done', 0):,}회 몬테카를로 결과. "
+        "우승% 합=100, 결승% 합=200. 녹아웃 무승부는 Elo 가중 확률(연장+승부차기 대용)로 처리. "
+        "선수 데이터가 없는 팀은 실측 Elo로 평가됩니다."
+    )
+
+
+# -----------------------------------------------------------------
+def render_group_stage(df_teams, team_ratings):
+    st.subheader("📊 조별리그 시뮬레이션")
+
+    groups = sorted(df_teams["group_letter"].unique())
+    c1, c2, c3 = st.columns([1, 1, 1])
+    grp = c1.selectbox("조 선택", groups, key="grp_new")
+    n_sim = c2.slider("시뮬 횟수", 100, 5000, 2000, step=100, key="grp_n_new")
+    c3.write("")
+    c3.write("")
+    run = c3.button("실행", use_container_width=True, type="primary", key="grp_run")
+
+    # 조 구성 표시
+    members = df_teams[df_teams["group_letter"] == grp].sort_values("group_pos")
+    chips = "  ".join(
+        f"`{r['team_name_ko']}`" for _, r in members.iterrows()
+    )
+    st.markdown(f"**{grp}조:** {chips}")
+
+    if run:
+        with st.spinner(f"{grp}조 {n_sim:,}회 시뮬레이션 중..."):
+            df_stats = simulate_group_many(grp, df_teams, team_ratings, n_sim=n_sim)
+        st.session_state[f"grp_stats_{grp}"] = df_stats
+
+    df_stats = st.session_state.get(f"grp_stats_{grp}")
+    if df_stats is None or df_stats.empty:
+        st.info("조를 선택하고 실행하세요.")
+        return
+
+    # 진출확률(1~2위) 막대
+    df_stats = df_stats.copy()
+    df_stats["진출%"] = df_stats["P1(1위%)"] + df_stats["P2(2위%)"]
+    st.markdown("**조 통과(1~2위) 확률**")
+    st.altair_chart(
+        _hbar(df_stats[["team_name_ko", "진출%"]].rename(columns={"team_name_ko": "team"}),
+              "진출%", "team", "진출%", color="#3ec97a", fmt=".1f", height=200),
+        use_container_width=True,
+    )
+
+    ren = {
+        "team_name_ko": "팀",
+        "P1(1위%)": "1위%", "P2(2위%)": "2위%", "P3(3위%)": "3위%", "P4(4위%)": "4위%",
+        "avg_PTS": "평균승점", "avg_GD": "평균득실", "avg_GF": "평균득점",
+    }
+    show = df_stats.drop(columns=["team_code", "진출%"], errors="ignore").rename(columns=ren)
+    st.dataframe(
+        show.style.format({
+            "1위%": "{:.1f}", "2위%": "{:.1f}", "3위%": "{:.1f}", "4위%": "{:.1f}",
+            "평균승점": "{:.2f}", "평균득실": "{:+.2f}", "평균득점": "{:.2f}",
+        }).background_gradient(subset=["1위%"], cmap="Greens"),
+        use_container_width=True, hide_index=True,
+    )
+
+
+# -----------------------------------------------------------------
+def render_match_sim(df_teams, team_ratings):
+    st.subheader("⚔️ 단일 경기 시뮬레이션")
+
+    def label(code):
+        r = df_teams[df_teams["team_code"] == code].iloc[0]
+        return f"{r['team_name_ko']} ({code}) · {r['group_letter']}조"
+
+    codes = df_teams["team_code"].tolist()
+    c1, c2 = st.columns(2)
+    home = c1.selectbox("홈 팀", codes, format_func=label, key="home_new", index=0)
+    away_default = 1 if len(codes) > 1 else 0
+    away = c2.selectbox("원정 팀", codes, format_func=label, key="away_new", index=away_default)
+
+    n_sim = st.slider("시뮬 횟수", 100, 5000, 2000, step=100, key="match_n_new")
+    run = st.button("⚔️ 맞대결 시뮬레이션", type="primary", key="match_run")
+
+    if home == away:
+        st.warning("서로 다른 두 팀을 선택하세요.")
+        return
+
+    if run:
+        hr = df_teams[df_teams["team_code"] == home].iloc[0]
+        ar = df_teams[df_teams["team_code"] == away].iloc[0]
+        summary = simulate_many(hr, ar, team_ratings, n_sim=n_sim)
+        eh, _ = get_team_elo(hr, team_ratings)
+        ea, _ = get_team_elo(ar, team_ratings)
+
+        hn = hr["team_name_ko"]; an = ar["team_name_ko"]
+        hw = summary["home_wins"] / n_sim * 100
+        dr = summary["draws"] / n_sim * 100
+        aw = summary["away_wins"] / n_sim * 100
+
+        c1, c2, c3 = st.columns(3)
+        c1.metric(f"{hn} 승", f"{hw:.1f}%", help=f"Elo {eh:.0f}")
+        c2.metric("무승부", f"{dr:.1f}%")
+        c3.metric(f"{an} 승", f"{aw:.1f}%", help=f"Elo {ea:.0f}")
+
+        st.caption(
+            f"평균 스코어  {hn} {summary['avg_home_goals']:.2f} – "
+            f"{summary['avg_away_goals']:.2f} {an}"
+        )
+
+        # 승무패 분포 막대
+        wld = pd.DataFrame({
+            "결과": [f"{hn} 승", "무승부", f"{an} 승"],
+            "확률": [hw, dr, aw],
+        })
+        bar = (
+            alt.Chart(wld).mark_bar(cornerRadiusEnd=4).encode(
+                x=alt.X("확률:Q", title=None),
+                y=alt.Y("결과:N", sort=None, title=None),
+                color=alt.Color("결과:N", scale=alt.Scale(
+                    range=["#5b8def", "#9aa0a6", "#e0563e"]), legend=None),
+                tooltip=["결과", alt.Tooltip("확률:Q", format=".1f")],
+            ).properties(height=140)
+        )
+        st.altair_chart(bar, use_container_width=True)
+
+        # 자주 나오는 스코어 TOP 6
+        sc = summary["score_counts"]
+        sc_rows = sorted(sc.items(), key=lambda kv: kv[1], reverse=True)[:6]
+        sc_df = pd.DataFrame([
+            {"스코어": f"{h}-{a}", "확률%": cnt / n_sim * 100} for (h, a), cnt in sc_rows
+        ])
+        st.markdown("**자주 나오는 스코어**")
+        st.dataframe(
+            sc_df.style.format({"확률%": "{:.1f}"}),
+            use_container_width=True, hide_index=True,
+        )
+    else:
+        st.info("두 팀을 고르고 맞대결을 시뮬레이션하세요.")
+
+
+# -----------------------------------------------------------------
+def render_teams(df_teams, df_players, team_ratings):
+    st.subheader("👥 팀 정보")
+
+    fc1, fc2 = st.columns(2)
+    groups = ["전체"] + sorted(df_teams["group_letter"].unique())
+    confeds = ["전체"] + sorted(df_teams["confed"].unique())
+    fg = fc1.selectbox("조 필터", groups, key="tf_grp")
+    fconf = fc2.selectbox(
+        "대륙 필터", confeds,
+        format_func=lambda c: c if c == "전체" else f"{CONFED_LABEL.get(c, c)} ({c})",
+        key="tf_conf",
+    )
+
+    view = df_teams.copy()
+    if fg != "전체":
+        view = view[view["group_letter"] == fg]
+    if fconf != "전체":
+        view = view[view["confed"] == fconf]
+
+    # Elo 붙이기
+    elos = []
+    for _, r in view.iterrows():
+        e, _s = get_team_elo(r, team_ratings)
+        elos.append(round(e, 0))
+    view = view.assign(Elo=elos).sort_values("Elo", ascending=False)
+
+    show = view[["team_name_ko", "team_code", "group_letter", "confed", "Elo"]].rename(
+        columns={"team_name_ko": "팀", "team_code": "코드",
+                 "group_letter": "조", "confed": "대륙"}
+    )
+    show["대륙"] = show["대륙"].map(lambda c: CONFED_LABEL.get(c, c))
+    st.dataframe(show, use_container_width=True, hide_index=True)
+
+    # 선수 명단 조회
+    st.divider()
+    st.markdown("**선수 명단 조회**")
+    code_options = view["team_code"].tolist()
+    if not code_options:
+        st.info("필터에 해당하는 팀이 없습니다.")
+        return
+
+    def plabel(code):
+        r = df_teams[df_teams["team_code"] == code].iloc[0]
+        return f"{r['team_name_ko']} ({code})"
+
+    sel = st.selectbox("팀 선택", code_options, format_func=plabel, key="pl_team")
+    if df_players.empty:
+        st.warning("선수 데이터 파일이 없습니다.")
+        return
+    pl = df_players[df_players["team_code"] == sel].copy()
+    if pl.empty:
+        st.info(f"{plabel(sel)} 는 선수 데이터가 없어 실측 Elo로 평가됩니다.")
+        return
+
+    pos_order = {"GK": 0, "DF": 1, "MF": 2, "FW": 3}
+    pl["_po"] = pl["position"].map(pos_order).fillna(9)
+    pl = pl.sort_values(["_po", "is_starting", "player_name_en"],
+                        ascending=[True, False, True])
+    pl["주전"] = pl["is_starting"].map(lambda x: "●" if x == 1 else "")
+    show_pl = pl[["player_name_ko", "position", "주전",
+                  "attack", "defense", "passing", "physical", "mental", "gk"]].rename(
+        columns={"player_name_ko": "이름", "position": "포지션",
+                 "attack": "공격", "defense": "수비", "passing": "패스",
+                 "physical": "피지컬", "mental": "멘탈", "gk": "GK"}
+    )
+    st.dataframe(show_pl, use_container_width=True, hide_index=True, height=480)
+
+
+# -----------------------------------------------------------------
+def main():
+    st.set_page_config(
+        page_title="World Cup 2026 Simulator",
+        page_icon="🏆",
+        layout="wide",
+    )
+
+    # 데이터 로드
+    df_teams = load_teams()
+    df_players = load_players()
+    team_ratings = build_team_ratings(df_players) if not df_players.empty else {}
+    global _TEAM_ELO_CACHE
+    _TEAM_ELO_CACHE = load_team_elo()
+
+    # 헤더
+    st.title("🏆 2026 월드컵 시뮬레이터")
+    st.caption(
+        "선수 능력치 + 실측 Elo 기반 몬테카를로 시뮬레이션 · "
+        "캐나다 / 멕시코 / 미국 · 2026.6.11 – 7.19"
+    )
+
+    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+        "🏆 우승 예측",
+        "📊 조별리그",
+        "⚔️ 경기 시뮬",
+        "🌍 개요",
+        "👥 팀 정보",
+    ])
+
+    with tab1:
+        render_title_prediction(df_teams, team_ratings)
+    with tab2:
+        render_group_stage(df_teams, team_ratings)
+    with tab3:
+        render_match_sim(df_teams, team_ratings)
+    with tab4:
+        render_overview(df_teams, team_ratings)
+    with tab5:
+        render_teams(df_teams, df_players, team_ratings)
 
 
 if __name__ == "__main__":
