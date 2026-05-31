@@ -1088,6 +1088,80 @@ def main():
                 "P_qual(1~2위%)는 해당 팀이 조 1~2위로 올라갈 확률을 의미합니다."
             )
 
+    # =====================================================================
+    # 🏆 우승 예측 (전체 토너먼트 몬테카를로)
+    # =====================================================================
+    st.header("🏆 우승 예측 – 전체 토너먼트 시뮬레이션")
+    st.caption(
+        "조별리그(72경기) → 32강 → 16강 → 8강 → 4강 → 결승까지 "
+        "대회 전체를 수천 번 돌려 각 팀의 단계별 진출 확률과 우승 확률을 계산합니다. "
+        "32강 대진은 FIFA 공식 규정(매치 73~88) + 베스트 3위 8팀 배정표(Annex C, 495개 시나리오)를 그대로 적용합니다."
+    )
+
+    n_tour = st.slider(
+        "토너먼트 시뮬레이션 횟수",
+        min_value=1000,
+        max_value=50000,
+        step=1000,
+        value=10000,
+        key="n_tour",
+    )
+
+    if st.button("🏆 우승 확률 계산"):
+        try:
+            import tournament as TNM
+        except Exception as e:
+            st.error(f"tournament 모듈을 불러오지 못했습니다: {e}")
+        else:
+            with st.spinner(f"{n_tour:,}회 대회 시뮬레이션 중..."):
+                df_tour = TNM.simulate_tournament_fast(
+                    df_teams,
+                    team_ratings,
+                    get_team_elo,
+                    n_sim=n_tour,
+                )
+
+            st.subheader("🥇 우승 확률 순위")
+            show = df_tour.copy()
+            ren = {
+                "rank": "순위",
+                "team": "팀",
+                "group": "조",
+                "champion_pct": "우승%",
+                "final_pct": "결승%",
+                "semi_pct": "4강%",
+                "quarter_pct": "8강%",
+                "r16_pct": "16강%",
+                "r32_pct": "32강%",
+            }
+            cols = ["rank", "team", "group", "champion_pct", "final_pct",
+                    "semi_pct", "quarter_pct", "r16_pct", "r32_pct"]
+            show = show[cols].rename(columns=ren)
+            for c in ["우승%", "결승%", "4강%", "8강%", "16강%", "32강%"]:
+                show[c] = show[c].map(lambda v: f"{v:.1f}")
+
+            st.dataframe(show, use_container_width=True, hide_index=True)
+
+            # 상위 12팀 우승확률 바차트
+            top = df_tour.head(12).set_index("team")["champion_pct"]
+            st.subheader("우승 확률 TOP 12")
+            st.bar_chart(top)
+
+            # KOR/JPN 별도 하이라이트
+            kj = df_tour[df_tour["team_code"].isin(["KOR", "JPN"])]
+            if not kj.empty:
+                st.subheader("🇰🇷 KOR / 🇯🇵 JPN")
+                kjs = kj[cols].rename(columns=ren)
+                for c in ["우승%", "결승%", "4강%", "8강%", "16강%", "32강%"]:
+                    kjs[c] = kjs[c].map(lambda v: f"{v:.1f}")
+                st.dataframe(kjs, use_container_width=True, hide_index=True)
+
+            st.caption(
+                f"{n_tour:,}회 몬테카를로 결과입니다. 우승%의 합은 100%, 결승%의 합은 200%가 됩니다. "
+                "녹아웃 무승부는 Elo 가중 확률(연장+승부차기 대용)로 처리합니다. "
+                "선수 데이터가 없는 팀은 실측 Elo로 대체 평가됩니다."
+            )
+
 
 if __name__ == "__main__":
     main()
