@@ -77,3 +77,81 @@ AUT,Alessandro Schopf,알레산드로 쇠프,MF,0,68,64,76,74,74,0
 AUT,Marko Arnautovic,마르코 아르나우토비치,FW,1,82,52,78,82,84,0
 AUT,Michael Gregoritsch,미하엘 그레고리치,FW,1,80,50,72,84,80,0
 AUT,Sasa Kalajdzic,사사 칼라이지치,FW,0,78,48,68,86,76,0
+BEL,Thibaut Courtois,티보 쿠르투아,GK,1,16,68,70,82,90,93
+BEL,Senne Lammens,센느 라먼스,GK,0,10,58,60,76,76,80
+BEL,Mike Penders,마이크 펜데르스,GK,0,10,56,58,74,74,78
+BEL,Timothy Castagne,티모시 카스타녜,DF,1,62,78,74,80,80,0
+BEL,Zeno Debast,제노 데바스트,DF,1,44,82,76,80,80,0
+BEL,Maxim De Cuyper,막심 더카위퍼,DF,1,64,76,74,78,78,0
+BEL,Koni De Winter,코니 더빈터르,DF,0,42,80,70,82,78,0
+BEL,Brandon Mechele,브랜던 메헬러,DF,0,38,78,68,80,76,0
+BEL,Thomas Meunier,토마 뫼니에,DF,0,60,74,72,80,78,0
+BEL,Nathan Ngoy,네이선 은고이,DF,0,40,76,66,80,74,0
+BEL,Joaquin Seys,호아킨 세이스,DF,0,58,72,72,76,74,0
+BEL,Arthur Theate,아르튀르 테아트,DF,1,46,82,72,82,80,0
+BEL,Kevin De Bruyne,케빈 더브라위너,MF,1,90,58,94,80,90,0
+BEL,Amadou Onana,아마두 오나나,MF,1,62,80,76,88,82,0
+BEL,Nicolas Raskin,니콜라 라스킨,MF,0,60,78,78,78,78,0
+BEL,Youri Tielemans,유리 틸레만스,MF,1,76,72,86,78,84,0
+BEL,Hans Vanaken,한스 바나컨,MF,0,74,68,82,78,80,0
+BEL,Axel Witsel,악셀 비첼,MF,0,60,76,80,76,82,0
+BEL,Charles De Ketelaere,샤를 더케텔라러,FW,0,82,58,82,80,82,0
+BEL,Jeremy Doku,제레미 도쿠,FW,1,88,48,80,84,82,0
+BEL,Matias Fernandez-Pardo,마티아스 페르난데스파르도,FW,0,78,46,74,78,74,0
+BEL,Romelu Lukaku,로멜루 루카쿠,FW,1,88,46,74,88,84,0
+BEL,Dodi Lukebakio,도디 루케바키오,FW,0,82,48,76,80,78,0
+BEL,Diego Moreira,디에고 모레이라,FW,0,76,46,74,78,74,0
+BEL,Alexis Saelemaekers,알렉시스 살러마커르스,FW,0,80,56,80,80,80,0
+BEL,Leandro Trossard,레안드로 트로사르,FW,1,85,52,82,78,84,0
+BIH,Osman Hadzikic,오스만 하지키치,GK,1,12,58,60,74,76,80
+BIH,Nikola Vasilj,니콜라 바실리,GK,0,10,58,60,76,76,80
+BIH,Martin Zlomislic,마르틴 즐로미슬리치,GK,0,10,54,56,72,72,76
+BIH,Nidar Celic,니다르 첼리치,DF,0,42,74,66,78,72,0
+BIH,Amar Dedic,아마르 데디치,DF,1,62,76,74,80,78,0
+BIH,Denis Hadzikadunic,데니스 하지카두니치,DF,0,40,76,66,80,74,0
+BIH,Nikola Katic,니콜라 카티치,DF,1,38,78,66,82,76,0
+BIH,Sead Kolasinac,세아드 콜라시나츠,DF,1,58,78,72,82,80,0
+BIH,Tarik Muharemovic,타리크 무하레모비치,DF,0,44,76,70,78,74,0
+BIH,Nihad Mujakic,니하드 무야키치,DF,0,40,74,66,78,72,0
+BIH,Stefan Radelic,스테판 라델리치,DF,0,38,72,64,76,70,0
+BIH,Kerim Alajbegovic,케림 알라이베고비치,MF,0,72,58,76,74,74,0
+BIH,Esmir Bajraktarevic,에스미르 바이락타레비치,MF,0,74,56,78,74,74,0
+BIH,Ivan Basic,이반 바시치,MF,0,58,72,74,74,74,0
+BIH,Denis Burnic,제니스 부르니치,MF,0,60,70,74,76,74,0
+BIH,Armin Gigovic,아르민 기고비치,MF,1,62,74,76,78,78,0
+BIH,Amir Hadziahmetovic,아미르 하지아흐메토비치,MF,1,58,76,76,78,78,0
+BIH,Ermin Mahmic,에르민 마흐미치,MF,0,60,68,72,74,72,0
+BIH,Amar Memic,아마르 메미치,MF,0,64,62,72,74,72,0
+BIH,Ivan Sunjic,이반 슌이치,MF,0,56,76,74,78,76,0
+BIH,Benjamin Tahirovic,벤야민 타히로비치,MF,1,66,72,80,78,78,0
+BIH,Samed Bazdar,사메드 바즈다르,FW,0,76,48,68,80,74,0
+BIH,Ermedin Demirovic,에르메딘 데미로비치,FW,1,80,52,74,82,80,0
+BIH,Edin Dzeko,에딘 제코,FW,1,82,48,78,82,86,0
+BIH,Jovo Lukic,요보 루키치,FW,0,72,46,66,78,72,0
+BIH,Haris Tabakovic,하리스 타바코비치,FW,0,78,46,68,84,76,0
+BRA,Alisson,알리송,GK,1,14,70,74,84,90,92
+BRA,Ederson,에데르송,GK,0,16,68,80,82,86,90
+BRA,Weverton,웨베르통,GK,0,10,60,64,76,78,82
+BRA,Alex Sandro,알렉스 산드루,DF,0,62,80,76,78,82,0
+BRA,Bremer,브레메르,DF,1,42,88,72,86,84,0
+BRA,Danilo,다닐루,DF,0,56,82,76,80,84,0
+BRA,Douglas Santos,도글라스 산투스,DF,1,66,78,76,78,80,0
+BRA,Gabriel Magalhaes,가브리에우 마갈량이스,DF,1,44,90,74,88,86,0
+BRA,Ibanez,이바녜스,DF,0,42,80,70,82,78,0
+BRA,Leo Pereira,레오 페레이라,DF,0,40,80,70,82,78,0
+BRA,Marquinhos,마르키뉴스,DF,1,46,90,78,84,88,0
+BRA,Wesley,웨슬리,DF,0,68,76,74,82,78,0
+BRA,Bruno Guimaraes,브루누 기마랑이스,MF,1,74,82,86,82,86,0
+BRA,Casemiro,카세미루,MF,0,58,86,76,84,86,0
+BRA,Danilo Santos,다닐루 산투스,MF,0,64,80,78,82,80,0
+BRA,Fabinho,파비뉴,MF,0,56,82,76,82,82,0
+BRA,Lucas Paqueta,루카스 파케타,MF,1,80,68,86,80,84,0
+BRA,Endrick,엔드리크,FW,0,84,46,74,80,80,0
+BRA,Gabriel Martinelli,가브리에우 마르티넬리,FW,0,86,52,80,84,82,0
+BRA,Igor Thiago,이고르 티아구,FW,0,80,48,70,84,78,0
+BRA,Luiz Henrique,루이스 엔히키,FW,0,84,50,80,82,80,0
+BRA,Matheus Cunha,마테우스 쿠냐,FW,1,86,54,82,82,84,0
+BRA,Neymar,네이마르 주니오르,FW,1,92,48,90,76,88,0
+BRA,Raphinha,하피냐,FW,1,90,56,86,82,88,0
+BRA,Rayan,하이안,FW,0,80,46,74,80,78,0
+BRA,Vinicius Junior,비니시우스 주니오르,FW,1,93,50,84,86,88,0
