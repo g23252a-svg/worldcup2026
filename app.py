@@ -90,8 +90,20 @@ def load_players():
 # =========================
 def compute_player_overall(row: pd.Series) -> float:
     """
-    선수 개별 종합 능력치(0~100)를 하나로 압축
+    선수 개별 종합 능력치(0~100)를 하나로 압축.
+    - GK는 attack/defense 대신 gk 스탯 중심으로 평가
+      (안 그러면 골키퍼의 낮은 공격력이 팀 평균을 왜곡함)
     """
+    is_gk = str(row.get("position", "")).upper() == "GK" or int(row.get("gk", 0) or 0) > 0
+    if is_gk:
+        gk = float(row.get("gk", 0) or 0)
+        return (
+            gk * 0.55
+            + row["defense"] * 0.15
+            + row["passing"] * 0.10
+            + row["physical"] * 0.10
+            + row["mental"] * 0.10
+        )
     return (
         row["attack"] * 0.35
         + row["defense"] * 0.30
@@ -141,41 +153,90 @@ def build_team_ratings(df_players: pd.DataFrame, use_starting_only: bool = True)
     return ratings
 
 
+@st.cache_data
+def load_team_elo() -> dict[str, dict]:
+    """
+    data/team_elo_2026.csv 에서 48팀 실제 Elo 레이팅을 로딩.
+    - World Football Elo (2026-01 기준) + 추정치/플레이오프 평균
+    - 반환: {team_code: {"elo": float, "elo_source": str}}
+    """
+    try:
+        df = pd.read_csv("data/team_elo_2026.csv")
+    except FileNotFoundError:
+        return {}
+
+    out: dict[str, dict] = {}
+    for _, r in df.iterrows():
+        out[str(r["team_code"])] = {
+            "elo": float(r["elo"]),
+            "elo_source": str(r.get("elo_source", "csv")),
+        }
+    return out
+
+
 def pot_to_rating(pot: int) -> float:
     """
     포트 번호(1~4)를 Elo 비슷한 레이팅으로 변환
-    - 선수 데이터 없는 팀용 fallback
+    - Elo 테이블에도 없는 팀용 최후 fallback
     """
     pot = int(pot)
     base = {
         1: 1850.0,
-        2: 1800.0,
-        3: 1750.0,
-        4: 1700.0,
+        2: 1780.0,
+        3: 1700.0,
+        4: 1620.0,
     }
-    return base.get(pot, 1775.0)
+    return base.get(pot, 1700.0)
 
 
 def overall_to_elo(overall: float) -> float:
     """
-    선수 평균 overall(0~100)을 Elo 비슷한 스케일로 변환
-    - 75 → 1800 근처, 90 → 1950 근처
+    선수 평균 overall(0~100)을 Elo 스케일로 변환.
+    이 데이터셋의 실제 squad overall 평균(약 73.5)을 1800에 앵커링하고
+    1점당 약 45 Elo 기울기로 강팀/약팀 격차를 표현.
+    - 73.5 → 1800, 78 → 2000, 70 → 1640 근처
     """
-    return 1800.0 + (overall - 75.0) * 10.0
+    return 1800.0 + (overall - 73.5) * 45.0
 
 
-def get_team_elo(row_team: pd.Series, team_ratings: dict) -> tuple[float, str]:
+# 선수 데이터가 있는 팀에서 (선수기반 Elo) vs (실측 Elo) 블렌딩 비율
+# 0.0 = 실측 Elo 100% / 1.0 = 선수 기반 100%
+PLAYER_ELO_BLEND = 0.45
+
+# 실측 Elo 테이블 전역 캐시 (main()에서 채움). 시뮬 함수 시그니처를
+# 바꾸지 않고도 get_team_elo가 접근할 수 있게 한다.
+_TEAM_ELO_CACHE: dict[str, dict] = {}
+
+
+def get_team_elo(
+    row_team: pd.Series,
+    team_ratings: dict,
+    team_elo: dict | None = None,
+) -> tuple[float, str]:
     """
-    팀 최종 Elo 레이팅 + 소스
-    - players_2026에 있으면 선수 기반
-    - 없으면 포트 기반
+    팀 최종 Elo 레이팅 + 소스.
+    우선순위:
+      1) 실측 Elo 테이블에 있고 선수 데이터도 있으면 → 블렌딩
+      2) 실측 Elo만 있으면 → 실측 Elo
+      3) 선수 데이터만 있으면 → 선수 기반
+      4) 둘 다 없으면 → 포트 fallback
     """
     code = row_team["team_code"]
     pot = row_team["seeding_pot"]
+    team_elo = team_elo or _TEAM_ELO_CACHE
 
-    if code in team_ratings:
-        overall = team_ratings[code]["overall"]
-        elo = overall_to_elo(overall)
+    base_elo = team_elo.get(code, {}).get("elo") if code in team_elo else None
+    has_players = code in team_ratings
+
+    if base_elo is not None and has_players:
+        player_elo = overall_to_elo(team_ratings[code]["overall"])
+        elo = (1 - PLAYER_ELO_BLEND) * base_elo + PLAYER_ELO_BLEND * player_elo
+        source = "elo+players"
+    elif base_elo is not None:
+        elo = base_elo
+        source = "elo_csv"
+    elif has_players:
+        elo = overall_to_elo(team_ratings[code]["overall"])
         source = "players_csv"
     else:
         elo = pot_to_rating(pot)
@@ -580,6 +641,11 @@ def main():
     df_teams = load_teams()
     df_players = load_players()
     team_ratings = build_team_ratings(df_players)
+
+    # 실측 Elo 테이블 로딩 + 전역 캐시에 주입
+    global _TEAM_ELO_CACHE
+    team_elo = load_team_elo()
+    _TEAM_ELO_CACHE = team_elo
 
     # -------------------------
     # 1) 팀 마스터 + 간단 통계
