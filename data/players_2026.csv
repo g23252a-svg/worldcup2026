@@ -1,56 +1,4 @@
 team_code,player_name_en,player_name_ko,position,is_starting,attack,defense,passing,physical,mental,gk
-KOR,Seung-Gyu Kim,김승규,GK,1,15,65,68,72,82,86
-KOR,Bum-Keun Song,송범근,GK,0,10,60,60,70,78,82
-KOR,Hyeon-Woo Jo,조현우,GK,0,12,62,62,72,80,84
-KOR,Ki-Je Lee,이기제,DF,1,65,68,72,70,74,0
-KOR,Jin-Su Kim,김진수,DF,0,60,70,70,72,76,0
-KOR,Min-Jae Kim,김민재,DF,1,40,92,76,88,88,0
-KOR,Seung-Hyun Jung,정승현,DF,0,35,80,66,78,76,0
-KOR,Young-Gwon Kim,김영권,DF,1,38,86,72,76,84,0
-KOR,Ju-Sung Kim,김주성,DF,0,35,74,66,74,72,0
-KOR,Ji-Soo Kim,김지수,DF,0,38,76,66,76,72,0
-KOR,Young-Woo Seol,설영우,DF,1,68,78,72,80,80,0
-KOR,Tae-Hwan Kim,김태환,DF,0,64,76,70,78,78,0
-KOR,Yong-Woo Park,박용우,MF,1,60,80,72,78,80,0
-KOR,In-Beom Hwang,황인범,MF,1,75,74,84,76,84,0
-KOR,Soon-Min Lee,이순민,MF,0,68,70,74,74,76,0
-KOR,Jin-Seob Park,박진섭,MF,0,58,78,70,74,78,0
-KOR,Hyun-Seok Hong,홍현석,MF,0,74,70,80,74,80,0
-KOR,Heung-Min Son,손흥민,FW,1,92,50,84,88,90,0
-KOR,Jae-Sung Lee,이재성,MF,1,78,72,82,78,84,0
-KOR,Hee-Chan Hwang,황희찬,FW,0,85,54,78,86,82,0
-KOR,Kang-In Lee,이강인,MF,1,84,52,88,76,86,0
-KOR,Gue-Sung Cho,조규성,FW,1,82,52,72,82,80,0
-KOR,Hyeon-Gyu Oh,오현규,FW,0,80,50,70,80,78,0
-KOR,Woo-Young Jeong,정우영,FW,0,78,50,76,80,78,0
-KOR,Moon-Seon-Min,문선민,FW,0,76,48,72,84,76,0
-KOR,Hyun-Jun Yang,양현준,FW,0,75,46,74,82,76,0
-JPN,Daiya Maekawa,前川黛也,GK,0,10,60,60,72,78,82
-JPN,Zion Suzuki,鈴木彩艶,GK,1,12,64,62,74,80,86
-JPN,Taishi Nozawa,野澤大志ブランドン,GK,0,10,58,60,70,76,80
-JPN,Yukinari Sugawara,菅原由勢,DF,1,70,76,78,80,80,0
-JPN,Shogo Taniguchi,谷口彰悟,DF,0,40,84,72,78,82,0
-JPN,Kou Itakura,板倉滉,DF,0,48,86,74,80,84,0
-JPN,Koki Machida,町田浩樹,DF,1,40,84,70,80,80,0
-JPN,Seiya Maikuma,毎熊晟矢,DF,0,66,76,72,80,78,0
-JPN,Yuta Nakayama,中山雄太,DF,1,48,80,72,78,80,0
-JPN,Hiroki Ito,伊藤洋輝,DF,0,50,82,74,80,80,0
-JPN,Takehiro Tomiyasu,冨安健洋,DF,1,46,88,74,82,86,0
-JPN,Tsuyoshi Watanabe,渡辺剛,DF,0,40,80,68,78,78,0
-JPN,Hidemasa Morita,守田英正,MF,1,70,80,80,78,84,0
-JPN,Wataru Endo,遠藤航,MF,1,64,88,78,80,88,0
-JPN,Reo Hatate,旗手怜央,MF,1,76,76,82,78,82,0
-JPN,Kaishu Sano,佐野海舟,MF,0,64,78,76,76,80,0
-JPN,Kaoru Mitoma,三笘薫,FW,1,90,50,82,88,86,0
-JPN,Takumi Minamino,南野拓実,FW,0,82,56,80,78,82,0
-JPN,Ayase Ueda,上田綺世,FW,1,84,50,72,82,80,0
-JPN,Ritsu Doan,堂安律,FW,0,84,52,80,80,84,0
-JPN,Mao Hosoya,細谷真大,FW,0,80,48,70,80,78,0
-JPN,Keito Nakamura,中村敬斗,FW,0,82,48,78,82,80,0
-JPN,Junya Ito,伊東純也,FW,0,86,50,80,86,80,0
-JPN,Takuma Asano,浅野拓磨,FW,0,80,48,72,84,78,0
-JPN,Takefusa Kubo,久保建英,FW,1,88,50,86,80,86,0
-JPN,Daizen Maeda,前田大然,FW,0,82,50,72,88,80,0
 AUT,Alexander Schlager,알렉산더 슐라거,GK,1,14,64,66,74,80,84
 AUT,Patrick Pentz,파트리크 펜츠,GK,0,12,60,62,72,76,80
 AUT,Florian Wiegele,플로리안 비겔레,GK,0,10,56,58,70,72,76
@@ -155,3 +103,453 @@ BRA,Neymar,네이마르 주니오르,FW,1,92,48,90,76,88,0
 BRA,Raphinha,하피냐,FW,1,90,56,86,82,88,0
 BRA,Rayan,하이안,FW,0,80,46,74,80,78,0
 BRA,Vinicius Junior,비니시우스 주니오르,FW,1,93,50,84,86,88,0
+FRA,Mike Maignan,마이크 메냥,GK,1,16,68,72,82,88,91
+FRA,Robin Risser,로뱅 리세르,GK,0,10,56,58,74,74,78
+FRA,Brice Samba,브리스 상바,GK,0,12,62,64,78,80,84
+FRA,Lucas Digne,뤼카 디뉴,DF,0,60,78,76,78,80,0
+FRA,Malo Gusto,말로 귀스토,DF,0,62,78,72,80,78,0
+FRA,Lucas Hernandez,뤼카 에르난데스,DF,0,48,82,72,82,82,0
+FRA,Theo Hernandez,테오 에르난데스,DF,1,66,80,76,82,82,0
+FRA,Ibrahima Konate,이브라히마 코나테,DF,1,44,86,72,88,84,0
+FRA,Jules Kounde,쥘 쿤데,DF,1,52,84,76,82,84,0
+FRA,Maxence Lacroix,막상스 라크루아,DF,0,42,80,70,82,78,0
+FRA,William Saliba,윌리암 살리바,DF,1,46,88,76,86,86,0
+FRA,Dayot Upamecano,다요 우파메카노,DF,1,46,86,74,86,82,0
+FRA,Ngolo Kante,은골로 캉테,MF,1,62,86,78,84,88,0
+FRA,Manu Kone,마누 코네,MF,0,64,80,78,84,80,0
+FRA,Adrien Rabiot,아드리앵 라비오,MF,1,72,78,80,84,84,0
+FRA,Aurelien Tchouameni,오렐리앵 추아메니,MF,1,64,84,82,84,86,0
+FRA,Warren Zaire-Emery,워런 자이르에메리,MF,0,72,76,82,80,80,0
+FRA,Magnes Akliouche,마그네스 아클리우슈,FW,0,80,54,80,78,78,0
+FRA,Bradley Barcola,브래들리 바르콜라,FW,1,86,52,80,82,82,0
+FRA,Rayan Cherki,하이안 셰르키,FW,0,84,52,86,76,82,0
+FRA,Ousmane Dembele,우스망 뎀벨레,FW,1,90,56,84,84,86,0
+FRA,Desire Doue,데지레 두에,FW,0,84,56,82,80,82,0
+FRA,Jean-Philippe Mateta,장필리프 마테타,FW,0,82,52,74,84,80,0
+FRA,Kylian Mbappe,킬리안 음바페,FW,1,95,52,86,88,90,0
+FRA,Michael Olise,마이클 올리세,FW,1,88,56,86,80,86,0
+FRA,Marcus Thuram,마르쿠스 튀랑,FW,0,86,54,78,86,84,0
+ENG,Dean Henderson,딘 헨더슨,GK,0,12,62,66,78,80,84
+ENG,Jordan Pickford,조던 픽포드,GK,1,14,66,72,80,86,88
+ENG,James Trafford,제임스 트래포드,GK,0,10,58,62,76,76,80
+ENG,Dan Burn,댄 번,DF,0,40,80,68,84,78,0
+ENG,Marc Guehi,마크 게히,DF,1,44,84,74,84,84,0
+ENG,Reece James,리스 제임스,DF,1,64,82,80,82,84,0
+ENG,Ezri Konsa,에즈리 콘사,DF,0,44,80,72,82,78,0
+ENG,Tino Livramento,티노 리브라멘토,DF,0,60,78,72,80,76,0
+ENG,Nico OReilly,니코 오라일리,DF,0,56,76,74,78,76,0
+ENG,Jarell Quansah,자렐 콴사,DF,0,42,80,70,82,76,0
+ENG,Jed Spence,제드 스펜스,DF,0,58,76,72,80,76,0
+ENG,John Stones,존 스톤스,DF,1,48,86,80,82,86,0
+ENG,Elliot Anderson,엘리엇 앤더슨,MF,0,68,76,80,80,78,0
+ENG,Jude Bellingham,주드 벨링엄,MF,1,86,68,86,86,90,0
+ENG,Eberechi Eze,에베레치 에제,MF,1,84,58,84,78,82,0
+ENG,Jordan Henderson,조던 헨더슨,MF,0,62,74,80,76,82,0
+ENG,Kobbie Mainoo,코비 마이누,MF,0,72,76,82,80,80,0
+ENG,Declan Rice,데클란 라이스,MF,1,74,84,82,86,88,0
+ENG,Morgan Rogers,모건 로저스,MF,0,80,58,80,80,78,0
+ENG,Anthony Gordon,앤서니 고든,FW,0,84,54,78,82,80,0
+ENG,Harry Kane,해리 케인,FW,1,92,52,84,84,90,0
+ENG,Noni Madueke,노니 마두에케,FW,0,82,52,76,80,78,0
+ENG,Marcus Rashford,마커스 래시포드,FW,0,86,52,78,86,82,0
+ENG,Bukayo Saka,부카요 사카,FW,1,90,58,84,82,86,0
+ENG,Ivan Toney,아이반 토니,FW,0,82,52,74,84,80,0
+ENG,Ollie Watkins,올리 왓킨스,FW,0,84,54,76,84,82,0
+GER,Oliver Baumann,올리버 바우만,GK,0,12,62,66,78,80,84
+GER,Manuel Neuer,마누엘 노이어,GK,1,18,68,78,82,90,90
+GER,Alexander Nubel,알렉산더 뉘벨,GK,0,12,62,66,78,80,84
+GER,Waldemar Anton,발데마르 안톤,DF,0,44,80,70,82,78,0
+GER,Nathaniel Brown,너새니얼 브라운,DF,0,56,76,72,80,76,0
+GER,Joshua Kimmich,요주아 키미히,DF,1,72,80,88,80,88,0
+GER,David Raum,다비트 라움,DF,1,66,78,80,80,80,0
+GER,Antonio Rudiger,안토니오 뤼디거,DF,1,46,86,76,86,86,0
+GER,Nico Schlotterbeck,니코 슐로터베크,DF,1,48,84,78,84,82,0
+GER,Jonathan Tah,요나탄 타,DF,1,46,84,74,86,82,0
+GER,Malick Thiaw,말리크 티아우,DF,0,44,80,70,84,78,0
+GER,Nadiem Amiri,나딤 아미리,MF,0,72,66,80,76,78,0
+GER,Leon Goretzka,레온 고레츠카,MF,0,76,74,82,82,82,0
+GER,Pascal Gross,파스칼 그로스,MF,0,68,72,84,74,82,0
+GER,Lennart Karl,렌나르트 카를,MF,0,76,56,78,74,76,0
+GER,Jamie Leweling,제이미 레벨링,MF,0,74,62,76,78,76,0
+GER,Jamal Musiala,자말 무시알라,MF,1,90,58,88,80,88,0
+GER,Felix Nmecha,펠릭스 은메차,MF,0,72,70,80,80,78,0
+GER,Aleksandar Pavlovic,알렉산다르 파블로비치,MF,0,68,76,82,78,80,0
+GER,Leroy Sane,리로이 자네,MF,0,86,54,82,84,82,0
+GER,Angelo Stiller,앙겔로 슈틸러,MF,0,68,72,84,76,80,0
+GER,Florian Wirtz,플로리안 비르츠,MF,1,90,60,90,80,88,0
+GER,Maximilian Beier,막시밀리안 바이어,FW,0,80,54,74,80,78,0
+GER,Kai Havertz,카이 하베르츠,FW,1,84,60,80,84,84,0
+GER,Deniz Undav,데니스 운다프,FW,0,82,54,76,80,80,0
+GER,Nick Woltemade,닉 볼테마데,FW,1,82,56,76,86,80,0
+POR,Diogo Costa,디오구 코스타,GK,1,14,66,72,80,84,89
+POR,Jose Sa,주제 사,GK,0,12,62,66,78,80,84
+POR,Rui Silva,후이 실바,GK,0,12,62,64,78,80,84
+POR,Ricardo Velho,히카르두 벨류,GK,0,10,56,58,74,74,78
+POR,Tomas Araujo,토마스 아라우주,DF,0,44,80,72,82,78,0
+POR,Joao Cancelo,주앙 칸셀루,DF,1,68,78,84,80,84,0
+POR,Diogo Dalot,디오구 달로트,DF,1,64,80,78,82,82,0
+POR,Ruben Dias,후벵 디아스,DF,1,46,88,78,86,88,0
+POR,Goncalo Inacio,곤살루 이나시우,DF,1,46,84,78,82,82,0
+POR,Nuno Mendes,누누 멘데스,DF,1,66,82,78,84,84,0
+POR,Matheus Nunes,마테우스 누네스,DF,0,70,74,80,82,80,0
+POR,Nelson Semedo,넬송 세메두,DF,0,62,76,74,80,78,0
+POR,Renato Veiga,헤나투 베이가,DF,0,52,80,74,82,78,0
+POR,Samuel Costa,사무엘 코스타,MF,0,64,74,78,78,76,0
+POR,Bruno Fernandes,브루누 페르난데스,MF,1,86,66,90,80,88,0
+POR,Joao Neves,주앙 네베스,MF,1,72,80,84,80,84,0
+POR,Ruben Neves,후벵 네베스,MF,0,70,78,84,78,82,0
+POR,Bernardo Silva,베르나르두 실바,MF,1,84,66,88,78,88,0
+POR,Vitinha,비티냐,MF,1,80,72,88,78,86,0
+POR,Francisco Conceicao,프란시스쿠 콘세이상,FW,0,82,54,80,76,78,0
+POR,Joao Felix,주앙 펠릭스,FW,0,84,54,82,78,80,0
+POR,Goncalo Guedes,곤살루 게데스,FW,0,80,54,78,80,78,0
+POR,Rafael Leao,하파엘 레앙,FW,1,90,52,82,86,84,0
+POR,Pedro Neto,페드루 네투,FW,0,84,56,80,82,82,0
+POR,Goncalo Ramos,곤살루 하무스,FW,0,82,52,74,84,80,0
+POR,Cristiano Ronaldo,크리스티아누 호날두,FW,1,90,50,80,84,90,0
+POR,Francisco Trincao,프란시스쿠 트링캉,FW,0,82,54,80,78,80,0
+NOR,Orjan Nyland,외르얀 호스콜 뉠란,GK,1,12,62,64,78,80,84
+NOR,Egil Selvik,에길 셀비크,GK,0,10,56,58,74,74,78
+NOR,Sander Tangvik,산데르 탕비크,GK,0,10,54,56,72,72,76
+NOR,Kristoffer Vassbakk Ajer,크리스토페르 바스바크 아예르,DF,1,46,80,72,84,80,0
+NOR,Fredrik Bjorkan,프레드리크 비에르칸,DF,0,58,74,72,78,74,0
+NOR,Henrik Falkenaer,헨리크 팔셰네르,DF,0,40,74,66,78,72,0
+NOR,Sondre Langas,손드레 랑고스,DF,0,42,74,66,78,72,0
+NOR,Torbjorn Heggem,토르비에른 헤겜,DF,0,42,76,68,80,74,0
+NOR,Markus Holmgren Pedersen,마르쿠스 홀름그렌 페데르센,DF,1,58,76,72,80,76,0
+NOR,Julian Ryerson,율리안 뤼에르손,DF,1,60,80,74,82,80,0
+NOR,David Moller Wolfe,다비드 묄레르 볼페,DF,0,58,74,72,78,74,0
+NOR,Leo Ostigard,레오 외스티고르,DF,1,42,80,68,84,78,0
+NOR,Thelo Aasgaard,텔로니우스 오스고르,MF,0,72,62,76,76,76,0
+NOR,Fredrik Aursnes,프레드리크 아우르스네스,MF,1,68,76,82,80,82,0
+NOR,Patrick Berg,파트리크 베르그,MF,0,62,74,78,78,76,0
+NOR,Sander Berge,산데르 베르게,MF,1,66,76,80,82,80,0
+NOR,Oscar Bobb,오스카르 보브,MF,0,80,56,82,76,80,0
+NOR,Jens Petter Hauge,옌스 페테르 하우게,MF,0,76,56,78,78,76,0
+NOR,Antonio Nusa,안토니오 누사,MF,1,84,54,80,80,80,0
+NOR,Andreas Schjelderup,안드레아스 셸데루프,MF,0,78,56,78,76,78,0
+NOR,Morten Thorsby,모르텐 토르스뷔,MF,0,62,74,74,80,76,0
+NOR,Kristian Thorstvedt,크리스티안 토르스트베트,MF,0,72,68,78,80,78,0
+NOR,Martin Odegaard,마르틴 외데고르,MF,1,86,62,90,78,88,0
+NOR,Erling Haaland,엘링 홀란드,FW,1,95,48,76,90,90,0
+NOR,Jorgen Strand Larsen,예르겐 스트란 라르센,FW,0,82,52,74,86,80,0
+NOR,Alexander Sorloth,알렉산데르 쇠를로트,FW,1,86,52,76,88,84,0
+SUI,Gregor Kobel,그레고어 코벨,GK,1,14,66,70,82,84,89
+SUI,Marvin Keller,마르빈 켈러,GK,0,10,56,58,74,74,78
+SUI,Yvon Mvogo,이본 음보고,GK,0,12,60,62,76,78,82
+SUI,Manuel Akanji,마누엘 아칸지,DF,1,50,86,80,84,86,0
+SUI,Aurel Amenda,오렐 아멘다,DF,0,42,78,70,82,76,0
+SUI,Eray Comert,에라이 죄메르트,DF,0,42,78,68,80,76,0
+SUI,Nico Elvedi,니코 엘베디,DF,1,46,82,74,82,80,0
+SUI,Luca Jaquez,루카 자케스,DF,0,42,76,68,80,74,0
+SUI,Miro Muheim,미로 무하임,DF,0,56,76,72,78,76,0
+SUI,Ricardo Rodriguez,리카르도 로드리게스,DF,1,60,80,78,78,82,0
+SUI,Silvan Widmer,질반 비드머,DF,1,60,76,74,80,78,0
+SUI,Michel Aebischer,미셸 애비셔,MF,1,70,72,80,78,80,0
+SUI,Christian Fassnacht,크리스티안 파스나흐트,MF,0,72,64,76,78,76,0
+SUI,Remo Freuler,레모 프로일러,MF,1,68,78,80,80,82,0
+SUI,Cedric Itten,세드리크 이텐,MF,0,74,58,72,80,74,0
+SUI,Ardon Jashari,아르돈 야샤리,MF,0,68,74,80,78,78,0
+SUI,Fabian Rieder,파비안 리더,MF,0,72,68,80,76,78,0
+SUI,Djibril Sow,지브릴 조우,MF,0,66,76,78,80,78,0
+SUI,Granit Xhaka,그라니트 자카,MF,1,76,76,86,80,86,0
+SUI,Denis Zakaria,데니스 자카리아,MF,1,72,80,80,84,82,0
+SUI,Zeki Amdouni,제키 암두니,FW,0,80,54,76,80,78,0
+SUI,Breel Embolo,브릴 엠볼로,FW,1,84,54,78,84,82,0
+SUI,Johan Manzambi,요한 만잠비,FW,0,76,56,76,78,76,0
+SUI,Dan Ndoye,단 은도예,FW,1,84,54,78,82,80,0
+SUI,Noah Okafor,노아 오카포르,FW,0,82,52,76,82,78,0
+SUI,Ruben Vargas,루벤 바르가스,FW,1,82,56,80,80,80,0
+KOR,Hyeon-Woo Jo,조현우,GK,1,12,64,64,76,82,86
+KOR,Seung-Gyu Kim,김승규,GK,0,12,62,62,74,80,82
+KOR,Bum-Keun Song,송범근,GK,0,10,60,60,72,78,82
+KOR,Min-Jae Kim,김민재,DF,1,40,92,76,88,88,0
+KOR,Yu-Min Cho,조유민,DF,0,38,78,66,80,74,0
+KOR,Han-Beom Lee,이한범,DF,0,40,76,66,80,72,0
+KOR,Tae-Hyun Kim,김태현,DF,0,42,76,68,78,74,0
+KOR,Jin-Seob Park,박진섭,DF,1,58,78,70,78,78,0
+KOR,Han-Gyeol Lee,이기혁,DF,0,44,74,66,76,72,0
+KOR,Tae-Seok Lee,이태석,DF,0,56,74,70,76,74,0
+KOR,Young-Woo Seol,설영우,DF,1,68,78,72,80,80,0
+KOR,Jens Castrop,옌스 카스트로프,MF,1,66,74,78,80,78,0
+KOR,Moon-Hwan Kim,김문환,DF,0,60,74,70,78,76,0
+KOR,Hyun-Jun Yang,양현준,DF,0,74,60,72,82,76,0
+KOR,Seung-Ho Paik,백승호,MF,1,72,76,82,78,82,0
+KOR,In-Beom Hwang,황인범,MF,1,75,74,84,76,84,0
+KOR,Jin-Gyu Kim,김진규,MF,0,64,72,78,74,76,0
+KOR,Jun-Ho Bae,배준호,FW,0,78,56,78,76,78,0
+KOR,Ji-Sung Eom,엄지성,FW,0,78,54,76,78,76,0
+KOR,Hee-Chan Hwang,황희찬,FW,1,85,54,78,86,82,0
+KOR,Dong-Gyeong Lee,이동경,MF,0,76,60,80,74,78,0
+KOR,Jae-Sung Lee,이재성,MF,1,78,72,82,78,84,0
+KOR,Kang-In Lee,이강인,MF,1,84,52,88,76,86,0
+KOR,Hyeon-Gyu Oh,오현규,FW,0,80,50,70,80,78,0
+KOR,Heung-Min Son,손흥민,FW,1,92,50,84,88,90,0
+KOR,Gue-Sung Cho,조규성,FW,0,82,52,72,82,80,0
+JPN,Tomoki Hayakawa,하야카와 토모키,GK,0,10,58,60,74,76,80
+JPN,Keisuke Osako,오사코 케이스케,GK,0,12,60,62,74,78,82
+JPN,Zion Suzuki,스즈키 자이온,GK,1,12,64,62,74,80,86
+JPN,Ko Itakura,이타쿠라 코,DF,1,48,86,74,80,84,0
+JPN,Hiroki Ito,이토 히로키,DF,1,50,82,74,80,80,0
+JPN,Yuto Nagatomo,나가토모 유토,DF,0,54,74,70,76,80,0
+JPN,Ayumu Seko,세코 아유무,DF,0,42,80,68,80,76,0
+JPN,Yukinari Sugawara,스가와라 유키나리,DF,1,70,76,78,80,80,0
+JPN,Junnosuke Suzuki,스즈키 준노스케,DF,0,56,74,70,78,74,0
+JPN,Shogo Taniguchi,타니구치 쇼고,DF,0,40,82,72,78,80,0
+JPN,Takehiro Tomiyasu,토미야스 타케히로,DF,1,46,88,74,82,86,0
+JPN,Tsuyoshi Watanabe,와타나베 츠요시,DF,0,40,80,68,78,78,0
+JPN,Ritsu Doan,도안 리츠,MF,1,84,52,80,80,84,0
+JPN,Wataru Endo,엔도 와타루,MF,1,64,88,78,80,88,0
+JPN,Junya Ito,이토 준야,FW,0,86,50,80,86,80,0
+JPN,Daichi Kamada,카마다 다이치,MF,1,82,64,84,78,84,0
+JPN,Takefusa Kubo,쿠보 다케후사,MF,1,88,50,86,80,86,0
+JPN,Keito Nakamura,나카무라 케이토,FW,0,82,48,78,82,80,0
+JPN,Kaishu Sano,사노 카이슈,MF,0,64,78,76,76,80,0
+JPN,Ao Tanaka,다나카 아오,MF,1,72,76,82,78,82,0
+JPN,Keisuke Goto,고토 케이스케,FW,0,78,48,70,80,76,0
+JPN,Daizen Maeda,마에다 다이젠,FW,1,82,50,72,88,80,0
+JPN,Koki Ogawa,오가와 코키,FW,0,80,48,70,82,78,0
+JPN,Kento Shiogai,시오가이 켄토,FW,0,76,48,72,78,74,0
+JPN,Yuito Suzuki,스즈키 유이토,MF,0,78,56,80,76,78,0
+JPN,Ayase Ueda,우에다 아야세,FW,1,84,50,72,82,80,0
+CZE,Lukas Horniczek,루카시 호르니체크,GK,0,10,58,60,76,76,80
+CZE,Matej Kovar,마테이 코바르시,GK,1,12,62,64,78,80,84
+CZE,Jindrich Stanek,인드르지흐 스타네크,GK,0,12,62,64,78,80,84
+CZE,Vladimir Coufal,블라디미르 초우팔,DF,1,58,78,72,80,80,0
+CZE,David Doudera,다비트 두데라,DF,0,54,74,70,78,74,0
+CZE,Tomas Holes,토마시 홀레시,DF,1,52,80,74,80,80,0
+CZE,Robin Hranac,로빈 흐라나치,DF,1,42,80,70,82,78,0
+CZE,Stepan Chaloupek,슈테판 할로우페크,DF,0,40,76,66,80,74,0
+CZE,David Jurasek,다비트 유라세크,DF,1,62,76,74,80,78,0
+CZE,Ladislav Krejci,라디슬라프 크레이치,DF,1,48,82,74,82,82,0
+CZE,Jaroslav Zeleny,야로슬라프 젤레니,DF,0,56,74,70,78,74,0
+CZE,David Zima,다비트 지마,DF,0,42,78,68,80,76,0
+CZE,Pavel Bucha,파벨 부하,MF,0,66,72,78,78,78,0
+CZE,Lukas Cerv,루카시 체르프,MF,1,64,76,78,78,78,0
+CZE,Vladimir Darida,블라디미르 다리다,MF,0,66,72,80,76,80,0
+CZE,Tomas Ladra,토마시 라드라,MF,0,72,60,76,76,74,0
+CZE,Lukas Provod,루카시 프로보드,MF,1,76,66,80,78,80,0
+CZE,Michal Sadilek,미할 사딜레크,MF,0,62,74,76,78,76,0
+CZE,Hugo Souhrek,후고 소후레크,MF,0,68,64,74,76,74,0
+CZE,Aleksandr Sojka,알렉산드르 소이카,MF,0,66,66,74,76,74,0
+CZE,Tomas Soucek,토마시 소우체크,MF,1,74,76,76,86,84,0
+CZE,Pavel Sulc,파벨 슐츠,MF,1,80,60,80,78,80,0
+CZE,Denis Visinsky,데니스 비신스키,MF,0,72,62,76,74,74,0
+CZE,Adam Hlozek,아담 흘로제크,FW,1,82,56,78,82,80,0
+CZE,Tomas Chory,토마시 호리,FW,1,80,52,70,86,78,0
+CZE,Mojmir Chytil,모이미르 히틸,FW,0,76,52,72,80,76,0
+CZE,Christof Kabongo,크리스토프 카봉고,FW,0,74,54,74,78,74,0
+CZE,Jan Kuchta,얀 쿠흐타,FW,0,78,52,72,82,78,0
+CZE,Patrik Schick,파트리크 시크,FW,1,86,52,76,84,84,0
+SWE,Viktor Johansson,빅토르 요한손,GK,1,12,62,64,78,80,84
+SWE,Gustaf Lagerbielke,구스타프 라게르비엘케,GK,0,10,56,58,74,74,78
+SWE,Kristoffer Nordfeldt,크리스토페르 노르트펠트,GK,0,12,60,62,76,78,82
+SWE,Jakob Setterstrom,야코브 세테르스트룀,GK,0,10,54,56,72,72,76
+SWE,Hjalmar Ekdal,얄마르 에크달,DF,1,42,80,70,82,78,0
+SWE,Gabriel Gudmundsson,가브리엘 구드문드손,DF,1,60,78,74,80,78,0
+SWE,Isak Hien,이사크 히엔,DF,1,44,84,72,86,82,0
+SWE,Victor Lindelof,빅토르 린델뢰프,DF,1,48,82,76,80,84,0
+SWE,Erik Smith,에리크 스미스,DF,0,52,76,72,78,74,0
+SWE,Carl Starfelt,카를 스타르펠트,DF,0,42,80,68,82,78,0
+SWE,Daniel Svensson,다니엘 스벤손,DF,0,56,74,72,78,74,0
+SWE,Yasin Ayari,야신 아야리,MF,0,70,68,78,78,76,0
+SWE,Lucas Bergvall,루카스 베리발,MF,1,74,70,80,78,78,0
+SWE,Jesper Karlstrom,예스페르 칼스트룀,MF,1,64,76,80,78,80,0
+SWE,Benjamin Nygren,벤야민 뉘그렌,MF,0,76,60,78,76,76,0
+SWE,Ken Sema,켄 세마,MF,0,72,62,74,78,76,0
+SWE,Elliot Stroud,엘리오트 스트라우드,MF,0,66,66,76,74,74,0
+SWE,Mattias Svanberg,마티아스 스반베리,MF,1,74,72,82,80,80,0
+SWE,Besfort Zeneli,베스포르트 제넬리,MF,0,70,62,76,76,74,0
+SWE,Taha Ali,타하 알리,FW,0,76,54,74,78,74,0
+SWE,Alexander Bernhardsson,알렉산데르 베른하르드손,FW,0,76,52,74,78,74,0
+SWE,Anthony Elanga,앤서니 엘랑가,FW,1,86,54,78,86,82,0
+SWE,Viktor Gyokeres,빅토르 요케레스,FW,1,90,52,76,88,86,0
+SWE,Alexander Isak,알렉산데르 이사크,FW,1,90,52,80,84,88,0
+SWE,Gustav Nilsson,구스타프 닐손,FW,0,78,50,70,84,78,0
+SEN,Mory Diaw,모리 디아우,GK,0,10,58,60,76,76,80
+SEN,Yehvann Diouf,예반 디우프,GK,1,12,60,62,76,78,82
+SEN,Edouard Mendy,에두아르 멘디,GK,0,14,66,68,82,86,88
+SEN,Ilay Camara,일라이 카마라,DF,0,56,74,70,78,74,0
+SEN,Crepin Diatta,크레팽 디아타,DF,1,62,76,74,80,78,0
+SEN,El Hadji Malick Diouf,엘 하지 말리크 디우프,DF,0,58,76,72,80,76,0
+SEN,Ismail Jacobs,이스마일 야콥스,DF,1,62,78,74,80,80,0
+SEN,Kalidou Koulibaly,칼리두 쿨리발리,DF,1,46,86,74,86,86,0
+SEN,Moustapha Mbow,무스타파 음보우,DF,0,42,78,68,82,76,0
+SEN,Antoine Mendy,앙투안 멘디,DF,0,56,76,72,80,74,0
+SEN,Moussa Niakhate,무사 니아카테,DF,1,44,82,72,84,80,0
+SEN,Mamadou Sarr,마마두 사르,DF,0,42,78,68,82,76,0
+SEN,Abdoulaye Seck,압둘라예 세크,DF,0,40,78,66,82,76,0
+SEN,Lamine Camara,라민 카마라,MF,1,72,74,80,80,80,0
+SEN,Pape Cisse,파테 시스,MF,0,58,76,72,80,76,0
+SEN,Habib Diarra,하비브 디아라,MF,1,74,72,80,80,80,0
+SEN,Idrissa Gana Gueye,이드리사 가나 게예,MF,1,68,82,80,84,86,0
+SEN,Pape Gueye,파페 게예,MF,0,64,78,76,82,78,0
+SEN,Pape Matar Sarr,파페 마타르 사르,MF,1,76,74,82,80,82,0
+SEN,Bara Sapokpo Ndiaye,바라 사포코 은디아예,MF,0,68,68,76,78,74,0
+SEN,Assane Diao,아산 디아오,FW,0,82,52,78,80,78,0
+SEN,Bamba Dieng,밤바 디엥,FW,0,78,50,72,82,76,0
+SEN,Nicolas Jackson,니콜라 잭슨,FW,1,86,52,78,84,82,0
+SEN,Sadio Mane,사디오 마네,FW,1,88,56,82,84,88,0
+SEN,Ibrahima Mbaye,이브라힘 음바예,FW,0,76,50,72,80,74,0
+SEN,Cherif Ndiaye,셰리프 은디아예,FW,0,78,50,72,82,76,0
+SEN,Iliman Ndiaye,일리만 은디아예,FW,1,84,56,82,80,82,0
+SEN,Ismaila Sarr,이스마일라 사르,FW,1,86,54,80,84,82,0
+SCO,Craig Gordon,크레이그 고든,GK,0,12,62,66,76,82,84
+SCO,Angus Gunn,앵거스 건,GK,1,12,62,66,78,80,84
+SCO,Liam Kelly,리엄 켈리,GK,0,10,58,60,76,76,80
+SCO,Grant Hanley,그랜트 핸리,DF,1,42,80,70,82,80,0
+SCO,Jack Hendry,잭 헨드리,DF,1,46,80,74,82,80,0
+SCO,Aaron Hickey,에런 히키,DF,1,60,78,74,80,78,0
+SCO,Dom Hyam,돔 하임,DF,0,40,76,66,80,74,0
+SCO,Scott McKenna,스콧 매케나,DF,0,42,80,70,82,78,0
+SCO,Nathan Patterson,네이선 패터슨,DF,1,62,76,72,80,78,0
+SCO,Anthony Ralston,앤서니 랠스턴,DF,0,56,74,70,78,74,0
+SCO,Andy Robertson,앤디 로버트슨,DF,1,68,80,82,80,86,0
+SCO,John Souttar,존 수타르,DF,0,42,78,68,80,76,0
+SCO,Kieran Tierney,키어런 티어니,DF,1,62,80,76,80,82,0
+SCO,Ryan Christie,라이언 크리스티,MF,1,74,68,80,78,80,0
+SCO,Findlay Curtis,핀들리 커티스,MF,0,68,62,74,74,72,0
+SCO,Lewis Ferguson,루이스 퍼거슨,MF,1,72,74,80,80,82,0
+SCO,Ben Gannon-Doak,벤 개넌도크,MF,0,78,56,76,78,76,0
+SCO,Billy Gilmour,빌리 길모어,MF,1,70,72,84,74,82,0
+SCO,John McGinn,존 맥긴,MF,1,76,72,82,80,84,0
+SCO,Kenny McLean,케니 매클린,MF,0,66,72,78,76,78,0
+SCO,Scott McTominay,스콧 맥토미니,MF,1,82,72,82,84,86,0
+SCO,Che Adams,체 애덤스,FW,1,82,52,76,82,80,0
+SCO,Lyndon Dykes,린든 다이크스,FW,0,78,52,72,84,78,0
+SCO,George Hirst,조지 허스트,FW,0,76,50,72,84,76,0
+SCO,Lawrence Shankland,로런스 섕클랜드,FW,1,82,50,74,80,80,0
+SCO,Ross Stewart,로스 스튜어트,FW,0,78,50,72,84,78,0
+HAI,Josue Duverger,조수에 뒤베르제,GK,1,10,58,60,74,76,80
+HAI,Alexandre Pierre,알렉상드르 피에르,GK,0,10,56,58,72,74,78
+HAI,Johny Placide,조니 플라시드,GK,0,12,58,60,74,76,80
+HAI,Ricardo Ade,리카르도 아데,DF,1,42,76,66,80,74,0
+HAI,Carlens Arcus,카를렝 아르퀴스,DF,1,56,74,70,78,74,0
+HAI,Agnes Delcroix,아네스 델크루아,DF,0,40,72,64,76,72,0
+HAI,Jean-Kevin Duverne,장케빈 뒤베른,DF,1,44,76,68,80,74,0
+HAI,Martin Experience,마르탱 엑스페리앙스,DF,0,40,72,64,76,70,0
+HAI,Duke Lacroix,듀크 라크루아,DF,0,54,72,70,76,72,0
+HAI,Wilgens Fogain,윌겐 포갱,DF,0,42,72,64,76,72,0
+HAI,Kito Thermonsji,키토 테르몽시,DF,0,40,72,64,76,70,0
+HAI,Carlfred Sainte,카를프레드 생트,MF,0,62,68,72,76,72,0
+HAI,Jean-Ricner Bellegarde,장리크네르 벨가르드,MF,1,78,64,80,80,80,0
+HAI,Leverton Pierre,레버턴 피에르,MF,0,60,68,72,74,72,0
+HAI,Danley Jean-Jacques,단리 장자크,MF,1,64,72,76,80,76,0
+HAI,Oudens Pierre,우덴스키 피에르,MF,0,58,68,72,74,72,0
+HAI,Dominik Simon,도미니크 시몽,MF,0,68,62,74,76,74,0
+HAI,Josue Casimir,조수에 카지미르,FW,0,74,52,72,78,74,0
+HAI,Louicius Dickson,루이시위스 딕송,FW,0,72,50,70,78,72,0
+HAI,Derrick Etienne Jr,데릭 에티엔 주니어,FW,1,80,54,78,80,78,0
+HAI,Yassin Fortune,야신 포르튄,FW,0,74,50,72,78,74,0
+HAI,Wilson Isidor,윌송 이지도르,FW,1,80,50,72,82,78,0
+HAI,Renny Joseph Ducens,레니 조제프 뒤컨스,FW,0,72,50,70,78,72,0
+HAI,Nathan Frantzdy,나종 프란츠디,FW,0,72,50,70,78,72,0
+HAI,Piero Ruben Providence,피에로 루벤 프로비당스,FW,0,76,52,74,78,74,0
+JOR,Yazid Abu Layla,야지드 아부 레일라,GK,0,10,56,58,74,74,78
+JOR,Abdallah Al-Fakhouri,압달라 알파쿠리,GK,1,12,60,62,76,78,82
+JOR,Ahmad Al-Zuaidi,아흐마드 알주아이디,GK,0,10,56,58,74,74,78
+JOR,Nour Bani Attiah,누르 바니 아티야,GK,0,10,54,56,72,72,76
+JOR,Mohammad Abualnadi,모하마드 아부알나디,DF,1,44,78,68,80,76,0
+JOR,Yousef Abu Al-Jazar,유세프 아부 알자자르,DF,0,40,74,66,78,72,0
+JOR,Hossam Abu Dahab,후삼 아부 다하브,DF,0,42,74,66,78,72,0
+JOR,Mohammad Abu Hasheesh,모하마드 아부 하시시,DF,0,40,74,66,78,72,0
+JOR,Mohannad Abu Taha,모한나드 아부 타하,DF,1,44,76,68,78,74,0
+JOR,Yazan Al-Arab,야잔 알아랍,DF,1,46,78,70,80,76,0
+JOR,Saed Al-Rosan,사에드 알로산,DF,0,42,74,66,78,72,0
+JOR,Ahmad Assaf,아흐마드 아사프,DF,0,40,74,66,78,72,0
+JOR,Anas Bani Yaseen,아나스 바다위,DF,0,42,76,68,78,74,0
+JOR,Abdallah Nasib,압달라 나시브,DF,0,40,74,66,78,72,0
+JOR,Ihsan Haddad,에산 하다드,DF,0,42,74,66,78,72,0
+JOR,Salem Obaid,살림 오바이드,DF,1,44,76,68,80,74,0
+JOR,Mohammad Taha,모하마드 타하,DF,0,42,74,66,78,72,0
+JOR,Mohammad Al-Dmeiri,모하마드 알다우드,MF,1,64,72,76,78,76,0
+JOR,Nizar Al-Rashdan,니자르 알라시단,MF,1,62,72,76,78,76,0
+JOR,Noor Al-Rawabdeh,누르 알라와브데,MF,0,66,68,74,76,74,0
+JOR,Rajaei Ayed,라자에이 아예드,MF,0,60,72,74,78,74,0
+JOR,Amer Jamous,아메르 자무스,MF,0,62,70,74,76,74,0
+JOR,Yousef Qasee,유세프 카시,MF,0,60,70,72,76,72,0
+JOR,Ibrahim Saadeh,이브라힘 사데,MF,1,68,68,78,78,78,0
+JOR,Mohammad Abu Zraiq,모하마드 아부 즈라이크,FW,0,74,52,72,78,74,0
+JOR,Mousa Al-Tamari,무사 알타마리,FW,1,86,54,80,80,82,0
+JOR,Ali Olwan,알리 올완,FW,1,80,50,72,82,78,0
+JOR,Oday Fakhouri,오데 파쿠리,FW,0,72,50,70,78,72,0
+JOR,Ali Olwan B,알리 아자이제,FW,0,76,50,72,80,74,0
+JOR,Ibrahim Sabra,이브라힘 사브라,FW,0,72,50,70,78,72,0
+NZL,Max Crocombe,맥스 크로컴,GK,1,10,58,60,76,76,80
+NZL,Alex Paulsen,알렉스 폴슨,GK,0,12,58,60,74,76,80
+NZL,Michael Woud,마이클 우드,GK,0,10,56,58,72,74,78
+NZL,Tyler Bindon,타일러 빈던,DF,1,44,76,68,80,74,0
+NZL,Michael Boxall,마이클 복솔,DF,1,42,76,66,82,76,0
+NZL,Liberato Cacace,리베라토 카카체,DF,1,60,74,72,78,76,0
+NZL,Francis de Vries,프랜시스 더프리스,DF,0,56,72,70,76,72,0
+NZL,Callan Elliot,캘런 엘리엇,DF,0,52,72,68,76,72,0
+NZL,Tim Payne,팀 페인,DF,0,44,74,66,78,74,0
+NZL,Nando Pijnaker,난도 페이너커르,DF,1,44,76,68,80,74,0
+NZL,Tommy Smith,토미 스미스,DF,0,42,74,66,80,74,0
+NZL,Finn Surman,핀 서먼,DF,0,42,74,66,78,72,0
+NZL,Lachlan Bayliss,라클런 베일리스,MF,0,60,68,72,74,72,0
+NZL,Joe Bell,조 벨,MF,1,64,72,78,78,78,0
+NZL,Matt Garbett,맷 가벳,MF,1,68,68,76,78,76,0
+NZL,Eli Just,엘리 저스트,MF,0,70,60,74,76,74,0
+NZL,Callum McCowatt,캘럼 매커워트,MF,0,72,56,72,76,72,0
+NZL,Ben Old,벤 올드,MF,1,76,58,76,78,76,0
+NZL,Alex Rufer,알렉스 루퍼,MF,0,60,72,74,76,74,0
+NZL,Marko Stamenic,마르코 스타메니치,MF,1,70,70,78,78,78,0
+NZL,Sarpreet Singh,사프리트 싱,MF,0,72,60,76,74,74,0
+NZL,Ryan Thomas,라이언 토머스,MF,0,72,62,76,76,74,0
+NZL,Kosta Barbarouses,코스타 바바루세스,FW,0,74,52,72,78,74,0
+NZL,Jesse Randall,제시 랜들,FW,0,72,50,70,78,72,0
+NZL,Ben Waine,벤 웨인,FW,0,74,50,70,80,74,0
+NZL,Chris Wood,크리스 우드,FW,1,86,52,74,86,84,0
+RSA,Ronwen Williams,론웬 윌리엄스,GK,1,12,62,64,78,80,84
+RSA,Ricardo Goss,리카르도 고스,GK,0,10,56,58,74,74,78
+RSA,Sipho Chaine,시포 차이네,GK,0,10,56,58,74,74,78
+RSA,Khuliso Mudau,쿨리소 무다우,DF,1,58,76,72,80,78,0
+RSA,Olwethu Makhanya,올웨투 마카냐,DF,0,42,76,66,80,74,0
+RSA,Bradley Cross,브래들리 크로스,DF,1,56,74,72,78,74,0
+RSA,Aubrey Modiba,오브리 모디바,DF,1,62,74,74,78,78,0
+RSA,Thapelo Maseko,타방 마툴루디,DF,0,58,72,72,78,74,0
+RSA,Nkosinathi Sibisi,은코시나티 시비시,DF,1,44,78,68,82,76,0
+RSA,Khulumani Ndamane,쿨루마니 은다마네,DF,0,42,76,66,80,74,0
+RSA,Ime Okon,이메 오콘,DF,0,42,76,66,80,74,0
+RSA,Samukelo Kabini,사무켈레 카비니,DF,0,40,74,66,78,72,0
+RSA,Mbekezeli Mbokazi,음베케젤리 음보카지,DF,0,42,74,66,78,72,0
+RSA,Kamogelo Sebelebele,카모겔로 세벨레벨레,MF,0,68,64,74,76,74,0
+RSA,Teboho Mokoena,테보호 모코에나,MF,1,76,72,82,80,82,0
+RSA,Jayden Adams,제이든 애덤스,MF,1,66,72,78,78,76,0
+RSA,Thalente Mbatha,탈렌테 음바타,MF,0,64,70,76,76,74,0
+RSA,Sphephelo Sithole,스페펠로 시톨레,MF,1,66,72,78,78,78,0
+RSA,Oswin Appollis,오스윈 아폴리스,FW,1,80,54,76,78,78,0
+RSA,Tshepang Moremi,체팡 모레미,FW,0,74,52,72,78,74,0
+RSA,Evidence Makgopa,에비던스 마크고파,FW,0,76,50,72,80,76,0
+RSA,Lyle Foster,라일 포스터,FW,1,82,52,76,82,80,0
+RSA,Iqraam Rayners,이크람 레이너스,FW,1,78,52,74,80,78,0
+RSA,Relebohile Mofokeng,렐레보힐레 모포켕,FW,0,80,54,78,78,78,0
+RSA,Themba Zwane,템바 즈와네,FW,0,78,56,80,76,80,0
+RSA,Tapelo Maseko,타펠로 마세코,FW,0,74,52,72,78,74,0
+TUN,Sabri Ben Hassen,사브리 벤하산,GK,0,10,56,58,74,74,78
+TUN,Abdelmouhib Chammakh,압델무히브 샤마크,GK,0,10,56,58,74,74,78
+TUN,Aymen Dahmen,아이멘 다흐멘,GK,1,12,60,62,76,78,82
+TUN,Ali Abdi,알리 압디,DF,1,60,76,72,80,78,0
+TUN,Mohamed Amine Ben Hamida,모하메드 아민 벤하미다,DF,0,54,74,70,78,74,0
+TUN,Adem Arous,아뎀 아루스,DF,0,42,74,66,78,72,0
+TUN,Dylan Bron,딜런 브론,DF,0,52,74,68,78,74,0
+TUN,Raed Chikhaoui,라이드 치카위,DF,0,44,74,66,78,72,0
+TUN,Motaz Neffati,모타즈 네파티,DF,0,42,74,66,78,72,0
+TUN,Omar Rekik,오마르 레키크,DF,1,44,78,68,82,76,0
+TUN,Montassar Talbi,몬타사르 탈비,DF,1,46,80,70,82,78,0
+TUN,Yan Valery,얀 발레리,DF,1,60,76,72,80,76,0
+TUN,Mortadha Ben Ouanes,모르타다 벤우아네스,MF,0,62,72,74,78,76,0
+TUN,Anis Ben Slimane,아니스 벤슬리만,MF,1,70,72,78,80,78,0
+TUN,Ismael Gharbi,이스마엘 가르비,MF,0,74,60,78,74,76,0
+TUN,Rani Khedira,라니 케디라,MF,0,64,76,76,80,78,0
+TUN,Haj Mahmoud,하지 마흐무드,MF,0,62,70,74,76,74,0
+TUN,Hannibal Mejbri,한니발 메브리,MF,1,80,62,82,80,82,0
+TUN,Elias Skhiri,엘리에스 스키리,MF,1,66,78,78,82,80,0
+TUN,Elias Achouri,엘리아스 아슈리,FW,1,82,56,78,80,80,0
+TUN,Khalil Ayari,칼릴 아야리,FW,0,74,52,72,78,74,0
+TUN,Firas Chaouat,피라스 샤우아트,FW,0,76,50,72,80,76,0
+TUN,Rayan Elloumi,라얀 엘루미,FW,0,74,52,74,78,74,0
+TUN,Hazem Mastouri,하젬 마스토리,FW,0,74,50,72,78,74,0
+TUN,Elias Saad,엘리아스 사드,FW,1,82,54,78,80,80,0
+TUN,Sebastian Tounekti,세바스티안 투넥티,FW,1,80,54,76,80,78,0
