@@ -810,3 +810,159 @@ AUS,Mitchell Duke,미첼 듀크,FW,1,80,52,72,84,80,0
 AUS,Mohamed Toure,모하메드 투레,FW,0,78,50,72,82,76,0
 AUS,Nishan Velupillay,니샨 벨루필레이,FW,0,78,52,76,80,76,0
 AUS,Adam Taggart,아담 태가트,FW,0,80,50,72,82,78,0
+URU,Sergio Rochet,세르히오 로체트,GK,1,12,62,68,80,82,85
+URU,Santiago Mele,산티아고 멜,GK,0,12,60,64,78,80,82
+URU,Franco Israel,프랑코 이스라엘,GK,0,12,58,62,78,78,81
+URU,Ronald Araujo,로날드 아라우호,DF,1,48,88,78,88,86,0
+URU,Jose Maria Gimenez,호세 마리아 히메네스,DF,1,46,86,76,86,86,0
+URU,Mathias Olivera,마티아스 올리베라,DF,1,62,82,78,82,82,0
+URU,Sebastian Caceres,세바스티안 카세레스,DF,0,44,82,72,84,80,0
+URU,Joaquin Piquerez,호아킨 피케레스,DF,1,64,80,78,82,82,0
+URU,Guillermo Varela,기예르모 바렐라,DF,0,58,78,74,80,78,0
+URU,Jose Luis Rodriguez,호세 루이스 로드리게스,DF,0,56,76,72,80,76,0
+URU,Santiago Bueno,산티아고 부에노,DF,0,44,80,70,84,78,0
+URU,Federico Valverde,페데리코 발베르데,MF,1,84,80,88,88,90,0
+URU,Manuel Ugarte,마누엘 우가르테,MF,1,58,84,80,84,84,0
+URU,Rodrigo Bentancur,로드리고 벤탄쿠르,MF,1,68,80,84,84,84,0
+URU,Nicolas de la Cruz,니콜라스 드 라 크루즈,MF,1,80,68,86,78,84,0
+URU,Giorgian de Arrascaeta,히오르히안 데 아라스카에타,MF,1,86,62,88,78,86,0
+URU,Federico Vinas,페데리코 비냐스,FW,0,80,52,74,82,78,0
+URU,Nicolas Fonseca,니콜라스 폰세카,MF,0,62,76,78,78,76,0
+URU,Facundo Pellistri,파쿤도 펠리스트리,MF,0,80,60,80,80,80,0
+URU,Brian Rodriguez,브라이언 로드리게스,MF,0,82,60,80,82,80,0
+URU,Maximiliano Araujo,막시밀리아노 아라우호,FW,0,80,58,78,82,78,0
+URU,Facundo Torres,파쿤도 토레스,FW,1,84,58,82,80,82,0
+URU,Rodrigo Aguirre,로드리고 아기레,FW,0,80,52,74,82,78,0
+URU,Agustin Canobbio,아구스틴 카노비오,MF,0,76,62,78,80,76,0
+URU,Darwin Nunez,다윈 누녜스,FW,1,90,54,78,88,84,0
+URU,Agustin Alvarez,아구스틴 알바레스,FW,0,80,50,72,84,76,0
+COL,David Ospina,다비드 오스피나,GK,1,14,64,72,80,84,86
+COL,Camilo Vargas,카밀로 바르가스,GK,0,12,62,68,80,82,85
+COL,Alvaro Montero,알바로 몬테로,GK,0,12,60,64,80,80,83
+COL,Daniel Munoz,다니엘 무뇨스,DF,1,66,80,78,84,84,0
+COL,Davinson Sanchez,다빈손 산체스,DF,1,46,86,76,86,84,0
+COL,Yerry Mina,예리 미나,DF,1,46,82,72,86,80,0
+COL,Johan Lucumi,존 루쿠미,DF,1,46,84,74,84,82,0
+COL,Deiver Machado,데이베르 마차도,DF,0,62,78,76,80,78,0
+COL,Johan Mojica,요안 모히카,DF,0,62,78,76,80,78,0
+COL,Santiago Arias,산티아고 아리아스,DF,0,60,76,74,80,76,0
+COL,Willer Ditta,윌레르 디타,DF,0,44,80,70,84,78,0
+COL,Richard Rios,리차르드 리오스,MF,1,74,78,84,84,84,0
+COL,Jefferson Lerma,헤페르손 레르마,MF,1,62,82,80,86,84,0
+COL,Kevin Castano,케빈 카르타뇨,MF,0,64,78,80,82,78,0
+COL,James Rodriguez,하메스 로드리게스,MF,1,84,62,90,76,88,0
+COL,Juan Fernando Quintero,후안 페르난도 킨테로,MF,0,80,64,86,76,82,0
+COL,Jorge Carrascal,호르헤 카라스칼,MF,0,80,62,82,78,80,0
+COL,Jhon Arias,존 아리아스,MF,1,84,66,84,82,84,0
+COL,Gustavo Puerta,구스타보 푸에르타,MF,0,64,76,78,80,76,0
+COL,Jaminton Campaz,하민톤 캄파스,MF,0,76,60,80,78,76,0
+COL,Luis Diaz,루이스 디아스,FW,1,90,60,84,84,88,0
+COL,Luis Suarez,루이스 수아레스,FW,1,84,52,76,84,82,0
+COL,Rafael Santos Borre,라파엘 산토스 보레,FW,0,80,56,76,82,80,0
+COL,Jhon Cordoba,존 코르도바,FW,0,82,52,74,86,80,0
+COL,Cucho Hernandez,쿠초 에르난데스,FW,1,84,58,80,82,82,0
+COL,Andres Gomez,안드레스 고메스,FW,0,78,54,78,78,76,0
+CRO,Dominik Livakovic,도미니크 리바코비치,GK,1,14,64,72,82,86,88
+CRO,Dominik Kotarski,도미니크 코타르스키,GK,0,12,60,64,80,80,82
+CRO,Ivor Pandur,이보르 판두르,GK,0,12,60,64,80,80,82
+CRO,Josko Gvardiol,요슈코 그바르디올,DF,1,58,88,82,88,88,0
+CRO,Duje Caleta-Car,두예 찰레타-차르,DF,1,44,84,74,86,82,0
+CRO,Josip Stanisic,요시프 스타니시치,DF,1,60,82,78,82,82,0
+CRO,Josip Sutalo,요시프 슈탈로,DF,1,44,82,74,84,80,0
+CRO,Marin Pongracic,마린 퐁그라치치,DF,0,46,80,72,84,78,0
+CRO,Martin Erlic,마르틴 에를리치,DF,0,44,80,72,82,78,0
+CRO,Luka Vuskovic,루카 부스코비치,DF,0,44,80,72,84,78,0
+CRO,Luka Modric,루카 모드리치,MF,1,82,72,94,76,92,0
+CRO,Mateo Kovacic,마테오 코바치치,MF,1,76,80,88,84,86,0
+CRO,Mario Pasalic,마리오 파샬리치,MF,1,78,72,82,82,82,0
+CRO,Nikola Vlasic,니콜라 블라시치,MF,1,80,70,84,80,82,0
+CRO,Luka Sucic,루카 수치치,MF,0,78,68,84,80,80,0
+CRO,Martin Baturina,마르틴 바투리나,MF,0,80,64,84,78,80,0
+CRO,Kristijan Jakic,크리스티얀 야키치,MF,0,60,78,76,82,78,0
+CRO,Petar Sucic,페타르 수치치,MF,0,72,72,82,80,80,0
+CRO,Nikola Moro,니콜라 모로,MF,0,62,76,78,82,78,0
+CRO,Toni Fruk,토니 프루크,MF,0,76,62,80,78,76,0
+CRO,Ivan Perisic,이반 페리시치,FW,1,84,64,84,84,86,0
+CRO,Andrej Kramaric,안드레이 크라마리치,FW,1,84,58,82,78,84,0
+CRO,Ante Budimir,안테 부디미르,FW,1,82,54,74,86,82,0
+CRO,Marco Pasalic,마르코 파샬리치,FW,0,80,56,78,80,78,0
+CRO,Petar Musa,페타르 무사,FW,0,82,52,74,86,80,0
+CRO,Igor Matanovic,이고르 마타노비치,FW,0,78,52,74,82,76,0
+ALG,Anthony Mandrea,안소니 만드레아,GK,1,12,60,66,80,80,84
+ALG,Alexis Guendouz,알렉시스 구엔두즈,GK,0,12,60,64,80,80,83
+ALG,Oussama Benbot,오사마 벤봇,GK,0,10,58,60,78,78,80
+ALG,Rami Bensebaini,라미 벤세바이니,DF,1,62,82,78,84,84,0
+ALG,Aissa Mandi,아이사 만디,DF,1,46,82,76,82,82,0
+ALG,Ramy Belmili,라피크 벨갈리,DF,0,56,76,72,80,76,0
+ALG,Youcef Atal,유세프 아탈,DF,1,66,76,76,82,80,0
+ALG,Rayan Ait-Nouri,라얀 아이트누리,DF,1,68,78,80,82,82,0
+ALG,Mohamed Amine Tougai,모하메드 아민 투가이,DF,1,44,82,72,84,80,0
+ALG,Zineddine Belaid,지네딘 벨라이드,DF,0,44,80,70,82,78,0
+ALG,Jaouen Hadjam,자우안 하잠,DF,0,60,76,74,80,76,0
+ALG,Ismael Bennacer,이스마엘 베네세르,MF,1,74,78,86,80,84,0
+ALG,Nabil Bentaleb,나빌 벤탈렙,MF,1,68,78,82,80,80,0
+ALG,Adem Zorgane,아뎀 조르가네,MF,0,70,74,82,78,78,0
+ALG,Ramiz Zerrouki,라미즈 제루키,MF,1,62,78,80,82,80,0
+ALG,Himad Abdelli,히마드 압델리,MF,1,76,68,82,78,80,0
+ALG,Ibrahim Maza,이브라힘 마자,MF,0,78,64,82,78,80,0
+ALG,Adil Aouchiche,아딜 아우치체,MF,0,76,66,82,76,78,0
+ALG,Houssem Aouar,하우셈 아우아르,MF,0,80,66,84,78,80,0
+ALG,Riyad Mahrez,리야드 마레즈,FW,1,88,58,86,78,88,0
+ALG,Amine Gouiri,아민 구이리,FW,1,84,56,80,82,82,0
+ALG,Mohamed Amoura,모하메드 아무라,FW,1,84,56,80,82,82,0
+ALG,Baghdad Bounedjah,바그다드 부네자,FW,0,82,52,74,84,80,0
+ALG,Anis Hadj Moussa,아니스 하지 무사,FW,0,80,56,80,80,78,0
+ALG,Fares Chaibi,파레스 샤이비,MF,0,78,66,82,80,78,0
+ALG,Chemsdine Berkane,셈스딘 베르카네,FW,0,78,54,76,80,76,0
+KSA,Mohammed Al-Owais,무함마드 알오와이스,GK,1,12,62,66,82,82,85
+KSA,Nawaf Al-Aqidi,나와프 알라키디,GK,0,12,60,64,80,80,82
+KSA,Ahmed Al-Kassar,아흐메드 알 카사르,GK,0,10,58,60,78,78,80
+KSA,Saud Abdulhamid,사우드 압둘하미드,DF,1,62,78,74,80,80,0
+KSA,Hassan Al-Tambakti,하산 알탐박티,DF,1,44,82,72,84,80,0
+KSA,Ali Al-Bulayhi,알리 알불라이히,DF,1,42,80,70,84,80,0
+KSA,Ali Lajami,알리 라자미,DF,0,42,78,70,82,78,0
+KSA,Nawaf Boushal,나와프 부샬,DF,0,56,76,72,78,76,0
+KSA,Abdulelah Al-Amri,압둘라 알 아마리,DF,1,44,80,72,82,78,0
+KSA,Hassan Kadesh,하산 카디쉬,DF,0,42,78,68,82,76,0
+KSA,Sultan Al-Ghannam,술탄 알간남,DF,0,58,76,72,80,76,0
+KSA,Mohamed Kanno,모하메드 칸노,MF,1,62,80,80,84,82,0
+KSA,Nasser Al-Dawsari,나세르 알다우사리,MF,1,68,74,80,80,80,0
+KSA,Salman Al-Faraj,살만 알파라지,MF,0,66,74,80,78,80,0
+KSA,Abdullah Al-Khaibari,압둘라 알카이바리,MF,1,62,76,78,80,78,0
+KSA,Musab Al-Juwayr,무삽 알쥬와이르,MF,1,76,64,82,76,80,0
+KSA,Ayman Yahya,아이만 야히아,MF,0,74,62,78,76,76,0
+KSA,Sami Al-Najei,사미 알나제이,MF,0,70,70,78,80,78,0
+KSA,Marwan Al-Sahafi,마르완 알사하피,MF,0,72,66,78,78,76,0
+KSA,Salem Al-Dawsari,살렘 알다우사리,FW,1,86,58,84,80,86,0
+KSA,Firas Al-Buraikan,피라스 알부라이칸,FW,1,84,54,78,84,82,0
+KSA,Saleh Al-Shehri,살레 알셰흐리,FW,1,82,52,76,82,80,0
+KSA,Abdullah Al-Hamdan,압둘라 알함단,FW,0,80,52,74,82,78,0
+KSA,Abdulrahman Ghareeb,압둘라흐만 가립,FW,0,80,56,80,78,78,0
+KSA,Saleh Abu Al-Shamat,살레 아부 알 샤마트,FW,0,78,54,76,78,76,0
+KSA,Khalid Al-Ghannam,칼리드 알 간남,MF,0,78,60,80,76,78,0
+TUR,Mert Gunok,메르트 귀노크,GK,1,14,64,70,82,84,87
+TUR,Ugurcan Cakir,우우르잔 차키르,GK,0,14,64,70,82,84,87
+TUR,Altay Bayindir,알타이 바인드르,GK,0,12,62,66,80,82,84
+TUR,Merih Demiral,메리흐 데미랄,DF,1,48,84,76,86,84,0
+TUR,Abdulkerim Bardakci,압둘케림 바르닥치,DF,1,46,82,74,84,82,0
+TUR,Samet Akaydin,사메트 아카이딘,DF,0,44,80,72,84,80,0
+TUR,Zeki Celik,제키 셀릭,DF,1,62,80,78,82,82,0
+TUR,Ferdi Kadioglu,페르디 카디오글루,DF,1,66,80,80,82,82,0
+TUR,Mert Muldur,메르트 뮐뒤르,DF,1,62,78,78,82,80,0
+TUR,Caglar Soyuncu,차을라르 쇠윈쥐,DF,0,46,82,74,84,80,0
+TUR,Eren Elmali,에렌 엘말르,DF,0,58,78,74,80,78,0
+TUR,Ahmetcan Kaplan,아흐메트칸 카플란,DF,0,44,78,70,82,76,0
+TUR,Hakan Calhanoglu,하칸 찰하노을루,MF,1,82,76,90,82,90,0
+TUR,Orkun Kokcu,오르쿤 코쿠,MF,1,76,76,84,80,82,0
+TUR,Ismail Yuksek,이스마일 윅섹,MF,1,60,80,78,84,80,0
+TUR,Salih Ozcan,살리 외즈칸,MF,0,62,78,80,82,80,0
+TUR,Can Uzun,잔 우준,MF,0,80,62,82,76,80,0
+TUR,Arda Guler,아르다 굴러,MF,1,84,62,90,76,86,0
+TUR,Atakan Karazor,아타칸 카라초어,MF,0,60,78,76,82,78,0
+TUR,Kerem Akturkoglu,무하메드 케렘 아크튀르콜루,FW,1,84,62,82,82,84,0
+TUR,Kenan Yildiz,케난 일디즈,FW,1,86,60,84,80,84,0
+TUR,Yunus Akgun,유누스 악균,FW,1,82,60,82,80,80,0
+TUR,Baris Alper Yilmaz,바르슈 알페르 이을마즈,FW,0,82,58,78,84,80,0
+TUR,Irfan Can Kahveci,이르판 잔 카흐베지,MF,0,80,64,82,78,80,0
+TUR,Deniz Gul,데니즈 귈,FW,0,78,52,74,82,76,0
+TUR,Yusuf Sari,유수프 사리,FW,0,78,54,78,80,76,0
